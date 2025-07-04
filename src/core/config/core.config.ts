@@ -20,14 +20,6 @@ export class CoreConfig {
   )
   port: number = Number(this.configService.get('PORT'));
 
-  @IsNumber(
-    {},
-    {
-      message: 'Set Env variable FILES_PORT, example: 3001',
-    },
-  )
-  filesPort: number = Number(this.configService.get('FILES_PORT'));
-
   // @IsNotEmpty({
   //   message:
   //     'Set Env variable DATABASE_URL, example: postgresql://user:password@localhost:5432/my-data-base',
@@ -49,6 +41,5 @@ export class CoreConfig {
 
   constructor(private configService: ConfigService<any, true>) {
     configValidationUtility.validateConfig(this);
-    console.log('port for FM is:', this.filesPort);
   }
 }
