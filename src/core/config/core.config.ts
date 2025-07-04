@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { configValidationUtility } from '../../setup/utils/config-validation-utility';
+import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
 
 export enum Environments {
   DEVELOPMENT = 'development',
@@ -25,17 +28,11 @@ export class CoreConfig {
   )
   filesPort: number = Number(this.configService.get('FILES_PORT'));
 
-  @IsNotEmpty({
-    message: 'Set Env variable FILES_SERVICE_HOST, example: service-name',
-  })
-  filesServiceHost: string =
-    this.configService.get<string>('FILES_SERVICE_HOST');
-
-  @IsNotEmpty({
-    message:
-      'Set Env variable DATABASE_URL, example: postgresql://user:password@localhost:5432/my-data-base',
-  })
-  databaseURL: string = this.configService.get<string>('DATABASE_URL');
+  // @IsNotEmpty({
+  //   message:
+  //     'Set Env variable DATABASE_URL, example: postgresql://user:password@localhost:5432/my-data-base',
+  // })
+  // databaseURL: string = this.configService.get<string>('DATABASE_URL');
 
   @IsEnum(Environments, {
     message:
