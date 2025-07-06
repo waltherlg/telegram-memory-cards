@@ -20,11 +20,11 @@ export class CoreConfig {
   )
   port: number = Number(this.configService.get('PORT'));
 
-  // @IsNotEmpty({
-  //   message:
-  //     'Set Env variable DATABASE_URL, example: postgresql://user:password@localhost:5432/my-data-base',
-  // })
-  // databaseURL: string = this.configService.get<string>('DATABASE_URL');
+  @IsNotEmpty({
+    message:
+      'Set Env variable MONGO_URL, example: mongodb+srv://admin:qwerty@cluster0.sgfsg.mongodb.net/?retryWrites=true&w=majority',
+  })
+  mongoURL: string = this.configService.get<string>('MONGO_URL');
 
   @IsEnum(Environments, {
     message:
