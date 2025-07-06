@@ -5,9 +5,18 @@ import { CardModule } from './features/cards/cards.module';
 import { CoreModule } from './core/core.module';
 import { configModule } from './config';
 import { TelegramModule } from './telegram/telegram.module';
+import { DatabaseModule } from './core/database/database.module';
+import { UserModule } from './features/users/user.module';
 
 @Module({
-  imports: [CardModule, CoreModule, configModule, TelegramModule],
+  imports: [
+    CardModule,
+    CoreModule,
+    configModule,
+    TelegramModule,
+    DatabaseModule,
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
