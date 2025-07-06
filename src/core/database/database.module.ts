@@ -9,7 +9,7 @@ import { CoreConfig } from '../config/core.config';
 
       useFactory: async (coreConfig: CoreConfig) => {
         console.log(`[Database] Connecting`);
-        return { uri: coreConfig.mongoURL };
+        return { uri: coreConfig.mongoURL, dbName: 'memory-cards' };
       },
     }),
   ],
