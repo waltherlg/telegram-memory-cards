@@ -17,7 +17,9 @@ export class TelegramUpdateHandler implements OnModuleInit {
     });
 
     bot.on('text', (ctx) => {
-      ctx.reply(`Ты написал: ${ctx.message.text}`);
+      const from = ctx.from;
+      console.log(from);
+      ctx.reply(`Ты написал: ${ctx.message.text}, от ${from}`);
     });
   }
 }
