@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { configValidationUtility } from '../../setup/utils/config-validation-utility';
+import { configValidationUtility } from '../../../setup/utils/config-validation-utility';
 import { IsNotEmpty } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 
