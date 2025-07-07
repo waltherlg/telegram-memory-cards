@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersRepository } from './infrastructure/users.repository';
 import { User, UserSchema } from './infrastructure/schemas/user.schema';
 import { SaCreateUserUseCase } from './application/useCases/super-admin-create-user.use-case';
-import { SaUsersUseCases } from './application/useCases/use-cases.providers';
+import { SaUsersUseCases } from './application/useCases/user.use-cases.providers';
 
 @Module({
   imports: [
@@ -13,5 +13,6 @@ import { SaUsersUseCases } from './application/useCases/use-cases.providers';
   ],
   controllers: [UsersController, SaUsersController],
   providers: [UsersRepository, ...SaUsersUseCases],
+  exports: [UsersRepository],
 })
 export class UserModule {}
