@@ -5,13 +5,13 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User implements IUserBase {
-  @Prop({ type: String, unique: true, sparse: true, default: null })
+  @Prop({ type: String, unique: true, sparse: true })
   telegramId?: string;
 
   @Prop({ unique: true })
   userName: string;
 
-  @Prop({ type: String, unique: true, sparse: true, default: null })
+  @Prop({ type: String, unique: true, sparse: true })
   email?: string;
 
   @Prop({ type: String, default: null })
