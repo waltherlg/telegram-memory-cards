@@ -13,7 +13,23 @@ export class UsersRepository {
     userDto: CreateUserDto | CreateUserTelegramDto,
   ): Promise<string> {
     const newUser = new this.userModel(userDto);
+    console.log(newUser);
     await newUser.save();
     return newUser._id.toString();
+  }
+
+  async isUserNameExist(userName: string): Promise<boolean> {
+    const count = await this.userModel.countDocuments({ userName });
+    return count > 0;
+  }
+
+  async isUserTelegramIdExist(telegramId: string): Promise<boolean> {
+    const count = await this.userModel.countDocuments({ telegramId });
+    return count > 0;
+  }
+
+  async isEmailExist(email: string): Promise<boolean> {
+    const count = await this.userModel.countDocuments({ email });
+    return count > 0;
   }
 }
