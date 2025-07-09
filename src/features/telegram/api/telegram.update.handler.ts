@@ -3,6 +3,7 @@ import { TelegramService } from '../telegram.service';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
+import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
 
 @Injectable()
 export class TelegramUpdateHandler implements OnModuleInit {
@@ -27,22 +28,21 @@ export class TelegramUpdateHandler implements OnModuleInit {
 
       const dto: CreateUserTelegramDto = {
         telegramId: id.toString(),
-        userName: username,
+        userName: username || id.toString(),
       };
 
       const result = await this.commandBus.execute(
         new UserRegisterViaTelegramCommand(dto),
       );
 
-      if (typeof result === 'string') {
-        ctx.reply(
-          `Поздравляю, зарегистрировался как ${username} c айдишкой ${result}`,
-        );
-      } else {
-        ctx.reply(
-          `${username}, либо ты уже зарегистрировался, либо что то пошло не так`,
-        );
-      }
+      console.log(result);
+
+      const isHandled = telegramHandleActionResult(result, ctx);
+      if (isHandled) return;
+
+      ctx.reply(
+        `Поздравляю, зарегистрировался как ${username} c айдишкой ${result}`,
+      );
     });
 
     bot.on('text', (ctx) => {
