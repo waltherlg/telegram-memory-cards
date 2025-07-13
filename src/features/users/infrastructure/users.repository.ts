@@ -13,7 +13,6 @@ export class UsersRepository {
     userDto: CreateUserDto | CreateUserTelegramDto,
   ): Promise<string> {
     const newUser = new this.userModel(userDto);
-    console.log(newUser);
     await newUser.save();
     return newUser._id.toString();
   }

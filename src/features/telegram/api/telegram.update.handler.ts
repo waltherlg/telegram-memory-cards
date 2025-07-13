@@ -1,10 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, UseGuards } from '@nestjs/common';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
 import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
 import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
+import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
@@ -37,17 +38,19 @@ export class TelegramUpdateHandler implements OnModuleInit {
       new UserRegisterViaTelegramCommand(dto),
     );
 
-    const isHandled = telegramHandleActionResult(result, ctx);
-    if (isHandled) return;
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
 
     await ctx.reply(
       `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
     );
   }
 
-  @Command('сделай')
+  @Command('new')
+  @UseGuards(TelegramAuthGuard)
   async onMakeCard(@Ctx() ctx: Context) {
-    await ctx.reply('🛠 Команда "сделай карточку" будет реализована позже');
+    //console.log(ctx.from);
+    await ctx.reply('🛠 Команда "New" будет реализована позже');
   }
 
   @On('text')
