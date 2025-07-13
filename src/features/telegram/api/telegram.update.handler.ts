@@ -1,57 +1,64 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { TelegramService } from '../telegram.service';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
 import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
+import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
+import { Context } from 'telegraf';
 
-@Injectable()
+@Update()
 export class TelegramUpdateHandler implements OnModuleInit {
-  constructor(
-    private readonly telegramService: TelegramService,
-    private readonly commandBus: CommandBus,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   onModuleInit() {
-    const bot = this.telegramService.getBot();
+    console.log('✅ Telegram bot is ready (handler initialized)');
+  }
 
-    bot.start((ctx) => {
-      ctx.reply('Привет! Я бот 🤖');
-    });
+  @Start()
+  async onStart(@Ctx() ctx: Context) {
+    await ctx.reply('Привет! Я бот 🤖');
+  }
 
-    bot.command('register', async (ctx) => {
-      const { id, username, is_bot } = ctx.from;
+  @Command('register')
+  async onRegister(@Ctx() ctx: Context) {
+    const { id, username, is_bot } = ctx.from!;
 
-      if (is_bot) {
-        ctx.reply(`Сорян, ботам вход запрещен`);
-        return;
-      }
+    if (is_bot) {
+      await ctx.reply(`Сорян, ботам вход запрещен`);
+      return;
+    }
 
-      const dto: CreateUserTelegramDto = {
-        telegramId: id.toString(),
-        userName: username || id.toString(),
-      };
+    const dto: CreateUserTelegramDto = {
+      telegramId: id.toString(),
+      userName: username || id.toString(),
+    };
 
-      const result = await this.commandBus.execute(
-        new UserRegisterViaTelegramCommand(dto),
-      );
+    const result = await this.commandBus.execute(
+      new UserRegisterViaTelegramCommand(dto),
+    );
 
-      console.log(result);
+    const isHandled = telegramHandleActionResult(result, ctx);
+    if (isHandled) return;
 
-      const isHandled = telegramHandleActionResult(result, ctx);
-      if (isHandled) return;
+    await ctx.reply(
+      `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
+    );
+  }
 
-      ctx.reply(
-        `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
-      );
-    });
+  @Command('сделай')
+  async onMakeCard(@Ctx() ctx: Context) {
+    await ctx.reply('🛠 Команда "сделай карточку" будет реализована позже');
+  }
 
-    bot.command('сделай карточку', async (ctx) => {});
+  @On('text')
+  async onText(@Ctx() ctx: Context) {
+    const from = ctx.from!;
+    const message = ctx.message;
 
-    bot.on('text', (ctx) => {
-      const from = ctx.from;
-      console.log(from);
-      ctx.reply(`Ты написал: ${ctx.message.text}, от ${from.username}`);
-    });
+    if ('text' in message) {
+      await ctx.reply(`Ты написал: ${message.text}, от ${from.username}`);
+    } else {
+      await ctx.reply(`Ты отправил что-то странное 🤔`);
+    }
   }
 }

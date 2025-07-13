@@ -9,6 +9,7 @@ async function bootstrap() {
   const port = coreConfig.port;
 
   appSetup(appContext);
+
   await appContext.listen(port, () => {
     console.log(`App listening on port ${port}`);
     console.log('NODE_ENV: ', coreConfig.env);

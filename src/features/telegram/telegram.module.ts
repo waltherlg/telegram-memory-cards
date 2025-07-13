@@ -1,18 +1,24 @@
 import { Module } from '@nestjs/common';
 import { TelegramConfig } from './config/telegram.config';
 import { TelegramUpdateHandler } from './api/telegram.update.handler';
-import { TelegramService } from './telegram.service';
 import { TelegramUseCases } from './application/useCases/telegram.use-cases.provider';
-import { UsersRepository } from '../users/infrastructure/users.repository';
 import { UserModule } from '../users/user.module';
+import { TelegrafModule } from 'nestjs-telegraf';
+import { TelegramConfigModule } from './telegram-config.module';
 
 @Module({
-  imports: [UserModule],
-  providers: [
-    TelegramService,
-    TelegramUpdateHandler,
-    TelegramConfig,
-    ...TelegramUseCases,
+  imports: [
+    UserModule,
+    TelegramConfigModule,
+    TelegrafModule.forRootAsync({
+      imports: [TelegramConfigModule],
+      inject: [TelegramConfig],
+      useFactory: (telegramConfig: TelegramConfig) => ({
+        token: telegramConfig.telegramBotToken,
+      }),
+    }),
   ],
+  providers: [TelegramUpdateHandler, TelegramConfig, ...TelegramUseCases],
+  exports: [TelegramConfig],
 })
 export class TelegramModule {}
