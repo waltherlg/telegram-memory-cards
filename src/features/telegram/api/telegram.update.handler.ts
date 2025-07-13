@@ -19,10 +19,6 @@ export class TelegramUpdateHandler implements OnModuleInit {
       ctx.reply('Привет! Я бот 🤖');
     });
 
-    bot.command('ping', (ctx) => {
-      ctx.reply('pong!');
-    });
-
     bot.command('register', async (ctx) => {
       const { id, username, is_bot } = ctx.from;
 
@@ -49,6 +45,8 @@ export class TelegramUpdateHandler implements OnModuleInit {
         `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
       );
     });
+
+    bot.command('сделай карточку', async (ctx) => {});
 
     bot.on('text', (ctx) => {
       const from = ctx.from;
