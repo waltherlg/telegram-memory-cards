@@ -18,6 +18,12 @@ export class UsersRepository {
     return newUser._id.toString();
   }
 
+  async exchangeTelegramIdToUserId(telegramId: string): Promise<string | null> {
+    const user = await this.userModel.findOne({ telegramId });
+    if (!user) return null;
+    return user._id.toString();
+  }
+
   async isUserNameExist(userName: string): Promise<boolean> {
     const count = await this.userModel.countDocuments({ userName });
     return count > 0;
