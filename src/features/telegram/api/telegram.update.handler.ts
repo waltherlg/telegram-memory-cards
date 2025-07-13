@@ -24,7 +24,12 @@ export class TelegramUpdateHandler implements OnModuleInit {
     });
 
     bot.command('register', async (ctx) => {
-      const { id, username } = ctx.from;
+      const { id, username, is_bot } = ctx.from;
+
+      if (is_bot) {
+        ctx.reply(`Сорян, ботам вход запрещен`);
+        return;
+      }
 
       const dto: CreateUserTelegramDto = {
         telegramId: id.toString(),
@@ -41,7 +46,7 @@ export class TelegramUpdateHandler implements OnModuleInit {
       if (isHandled) return;
 
       ctx.reply(
-        `Поздравляю, зарегистрировался как ${username} c айдишкой ${result}`,
+        `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
       );
     });
 
