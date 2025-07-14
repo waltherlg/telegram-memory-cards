@@ -17,6 +17,13 @@ export class UsersRepository {
     return newUser._id.toString();
   }
 
+  async getAllTelegramUsers(): Promise<UserDocument[]> {
+    const users = await this.userModel.find({
+      telegramId: { $exists: true, $ne: null },
+    });
+    return users;
+  }
+
   async exchangeTelegramIdToUserId(
     telegramId: string,
   ): Promise<Types.ObjectId | null> {

@@ -3,23 +3,34 @@ import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
 import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
-import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
-import { Context } from 'telegraf';
+import { Command, Ctx, InjectBot, On, Start, Update } from 'nestjs-telegraf';
+import { Context, Telegraf } from 'telegraf';
 import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
 import { CreateCardDto } from '../../cards/domain/dto/cards.dto';
 import { newCardParser } from '../utils/newCardParser';
 import { UserCreateCardCommand } from '../../cards/application/use.cases/create-card.use-case';
 import { CardsRepository } from '../../cards/infrastructure/cards.repository';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
   constructor(
+    @InjectBot() private readonly bot: Telegraf<Context>,
     private readonly commandBus: CommandBus,
     private readonly cardsRepository: CardsRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     console.log('✅ Telegram bot is ready (handler initialized)');
+    const users = await this.usersRepository.getAllTelegramUsers();
+
+    for (const user of users) {
+      await this.bot.telegram.sendMessage(
+        +user.telegramId,
+        '📡 Бот снова в сети! Добро пожаловать 👋',
+      );
+    }
   }
 
   @Start()
