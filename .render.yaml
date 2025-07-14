@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: telegram-bot
+    name: telegram-memory-cards
     env: node
     plan: free
     buildCommand: corepack enable && pnpm install && pnpm run build
