@@ -26,6 +26,7 @@
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.2.0",
     "axios": "^1.10.0",
     "class-transformer": "^0.5.1",
@@ -82,7 +83,7 @@
     "testEnvironment": "node"
   },
   "engines": {
-  "node": ">=20.0.0",
-  "pnpm": ">=9.0.0"
-}
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
 }
