@@ -6,10 +6,17 @@ import { telegramHandleActionResult } from '../application/telegram-action-resul
 import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
+import { CreateCardDto } from '../../cards/domain/dto/cards.dto';
+import { newCardParser } from '../utils/newCardParser';
+import { UserCreateCardCommand } from '../../cards/application/use.cases/create-card.use-case';
+import { CardsRepository } from '../../cards/infrastructure/cards.repository';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly cardsRepository: CardsRepository,
+  ) {}
 
   onModuleInit() {
     console.log('✅ Telegram bot is ready (handler initialized)');
@@ -46,11 +53,56 @@ export class TelegramUpdateHandler implements OnModuleInit {
     );
   }
 
+  @Command('read')
+  @UseGuards(TelegramAuthGuard)
+  async getRandomCard(@Ctx() ctx: Context) {
+    const card = await this.cardsRepository.getRandomCardByUser(
+      ctx.state.userId,
+    );
+    if (!card) {
+      await ctx.reply('К сожалению карточка не найдена');
+      return;
+    }
+
+    await ctx.reply(`${card.text}`);
+  }
+
   @Command('new')
   @UseGuards(TelegramAuthGuard)
   async onMakeCard(@Ctx() ctx: Context) {
-    //console.log(ctx.from);
-    await ctx.reply('🛠 Команда "New" будет реализована позже');
+    if (!('text' in ctx.message)) {
+      await ctx.reply(
+        '⚠️ Это не текстовое сообщение. Пожалуйста, введите команду текстом.',
+      );
+      return;
+    }
+    const massage = ctx.message?.text || null;
+    const parsed = newCardParser(massage);
+
+    if (!parsed) {
+      await ctx.reply(
+        '⚠️ Неверный формат.\nПравильно так:\n/new # категория # заголовок # текст',
+      );
+      return;
+    }
+
+    const dto: CreateCardDto = {
+      userId: ctx.state.userId,
+      category: parsed.category,
+      title: parsed.title,
+      text: parsed.text,
+    };
+
+    try {
+      const cardTitle = await this.commandBus.execute(
+        new UserCreateCardCommand(dto),
+      );
+
+      await ctx.reply(`✅ Карточка "${cardTitle}" успешно создана!`);
+    } catch (error) {
+      console.error('Ошибка при создании карточки:', error);
+      await ctx.reply('❌ Не удалось создать карточку. Попробуйте позже.');
+    }
   }
 
   @On('text')
