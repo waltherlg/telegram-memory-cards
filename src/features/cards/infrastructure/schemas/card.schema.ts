@@ -5,12 +5,15 @@ export type CardDocument = HydratedDocument<Card>;
 
 @Schema({ timestamps: true })
 export class Card {
-  @Prop()
-  userId: string;
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  userId: Types.ObjectId;
+
   @Prop()
   category: string;
+
   @Prop()
   title: string;
+
   @Prop()
   text: string;
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateUserDto } from '../domain/dto/user.domain.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserTelegramDto } from '../../telegram/domain/dto/user.telegram.domain.dto';
@@ -17,10 +17,12 @@ export class UsersRepository {
     return newUser._id.toString();
   }
 
-  async exchangeTelegramIdToUserId(telegramId: string): Promise<string | null> {
+  async exchangeTelegramIdToUserId(
+    telegramId: string,
+  ): Promise<Types.ObjectId | null> {
     const user = await this.userModel.findOne({ telegramId });
     if (!user) return null;
-    return user._id.toString();
+    return user._id;
   }
 
   async isUserNameExist(userName: string): Promise<boolean> {
