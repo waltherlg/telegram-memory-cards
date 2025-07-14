@@ -5,10 +5,12 @@ import { TelegramUseCases } from './application/useCases/telegram.use-cases.prov
 import { UserModule } from '../users/user.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramConfigModule } from './telegram-config.module';
+import { CardModule } from '../cards/cards.module';
 
 @Module({
   imports: [
     UserModule,
+    CardModule,
     TelegramConfigModule,
     TelegrafModule.forRootAsync({
       imports: [TelegramConfigModule],

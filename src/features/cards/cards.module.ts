@@ -11,5 +11,6 @@ import { Card, CardSchema } from './infrastructure/schemas/card.schema';
   ],
   controllers: [CardsController],
   providers: [...CardUseCases, CardsRepository],
+  exports: [CardsRepository],
 })
 export class CardModule {}
