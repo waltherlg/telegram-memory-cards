@@ -6,6 +6,7 @@ import { UserModule } from '../users/user.module';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramConfigModule } from './telegram-config.module';
 import { CardModule } from '../cards/cards.module';
+import { TelegramAdapter } from '../../core/telegram/telegram.adapter';
 
 @Module({
   imports: [
@@ -20,7 +21,12 @@ import { CardModule } from '../cards/cards.module';
       }),
     }),
   ],
-  providers: [TelegramUpdateHandler, TelegramConfig, ...TelegramUseCases],
-  exports: [TelegramConfig],
+  providers: [
+    TelegramAdapter,
+    TelegramUpdateHandler,
+    TelegramConfig,
+    ...TelegramUseCases,
+  ],
+  exports: [TelegramConfig, TelegramAdapter],
 })
 export class TelegramModule {}

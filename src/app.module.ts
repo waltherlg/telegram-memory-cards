@@ -7,7 +7,7 @@ import { configModule } from './config';
 import { TelegramModule } from './features/telegram/telegram.module';
 import { DatabaseModule } from './core/database/database.module';
 import { UserModule } from './features/users/user.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from './core/schceduler/scheduler.module';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TelegramModule,
     DatabaseModule,
     UserModule,
-    ScheduleModule.forRoot(),
+    SchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
