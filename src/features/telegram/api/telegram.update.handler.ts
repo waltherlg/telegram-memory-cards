@@ -23,14 +23,6 @@ export class TelegramUpdateHandler implements OnModuleInit {
 
   async onModuleInit() {
     console.log('✅ Telegram bot is ready (handler initialized)');
-    const users = await this.usersRepository.getAllTelegramUsers();
-
-    for (const user of users) {
-      await this.bot.telegram.sendMessage(
-        +user.telegramId,
-        '📡 Бот снова в сети! Добро пожаловать 👋',
-      );
-    }
   }
 
   @Start()
