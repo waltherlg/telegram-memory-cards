@@ -14,7 +14,9 @@ export class CardsRepository {
     return newCard.title;
   }
 
-  async getRandomCardByUser(userId: string): Promise<Card | null> {
+  async getRandomCardByUser(
+    userId: string | Types.ObjectId,
+  ): Promise<Card | null> {
     const result = await this.cardModel.aggregate([
       { $match: { userId: new Types.ObjectId(userId) } },
       { $sample: { size: 1 } },
