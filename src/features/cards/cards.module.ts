@@ -4,10 +4,17 @@ import { CardUseCases } from './application/use.cases/cards.use-cases';
 import { CardsRepository } from './infrastructure/cards.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Card, CardSchema } from './infrastructure/schemas/card.schema';
+import {
+  RemainderList,
+  ReminderListSchema,
+} from './infrastructure/schemas/cards-remainder-list';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Card.name, schema: CardSchema }]),
+    MongooseModule.forFeature([
+      { name: Card.name, schema: CardSchema },
+      { name: RemainderList.name, schema: ReminderListSchema },
+    ]),
   ],
   controllers: [CardsController],
   providers: [...CardUseCases, CardsRepository],
