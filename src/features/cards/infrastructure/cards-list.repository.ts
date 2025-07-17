@@ -16,7 +16,8 @@ export class RemainderListRepository {
   async createReminderList(
     userId: Types.ObjectId,
   ): Promise<RemainderListDocument> {
-    const newList = new this.ReminderListModel(userId);
+    const newList = new this.ReminderListModel({ userId });
+
     await newList.save();
     return newList;
   }
@@ -24,8 +25,9 @@ export class RemainderListRepository {
   async getReminderList(
     userId: Types.ObjectId,
   ): Promise<RemainderListDocument> {
-    const list = await this.ReminderListModel.find({ userId });
+    const list = await this.ReminderListModel.findOne({ userId });
     if (!list) return await this.createReminderList(userId);
+    return list;
   }
 
   async saveList(list: RemainderListDocument): Promise<RemainderListDocument> {

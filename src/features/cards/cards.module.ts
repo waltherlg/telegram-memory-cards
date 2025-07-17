@@ -8,6 +8,7 @@ import {
   RemainderList,
   ReminderListSchema,
 } from './infrastructure/schemas/cards-remainder-list';
+import { RemainderListRepository } from './infrastructure/cards-list.repository';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import {
     ]),
   ],
   controllers: [CardsController],
-  providers: [...CardUseCases, CardsRepository],
+  providers: [...CardUseCases, CardsRepository, RemainderListRepository],
   exports: [CardsRepository],
 })
 export class CardModule {}
