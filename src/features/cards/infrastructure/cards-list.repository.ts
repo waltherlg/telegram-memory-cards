@@ -3,9 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   RemainderList,
   RemainderListDocument,
-  ReminderListSchema,
 } from './schemas/cards-remainder-list';
-import { Model, ObjectId } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class RemainderListRepository {
@@ -14,13 +13,17 @@ export class RemainderListRepository {
     private ReminderListModel: Model<RemainderListDocument>,
   ) {}
 
-  async createReminderList(userId: ObjectId): Promise<RemainderListDocument> {
+  async createReminderList(
+    userId: Types.ObjectId,
+  ): Promise<RemainderListDocument> {
     const newList = new this.ReminderListModel(userId);
     await newList.save();
     return newList;
   }
 
-  async getReminderList(userId: ObjectId): Promise<RemainderListDocument> {
+  async getReminderList(
+    userId: Types.ObjectId,
+  ): Promise<RemainderListDocument> {
     const list = await this.ReminderListModel.find({ userId });
     if (!list) return await this.createReminderList(userId);
   }

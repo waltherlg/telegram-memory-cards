@@ -11,6 +11,7 @@ import { newCardParser } from '../utils/newCardParser';
 import { UserCreateCardCommand } from '../../cards/application/use.cases/create-card.use-case';
 import { CardsRepository } from '../../cards/infrastructure/cards.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { RenewRemainderListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
@@ -106,6 +107,15 @@ export class TelegramUpdateHandler implements OnModuleInit {
       console.error('Ошибка при создании карточки:', error);
       await ctx.reply('❌ Не удалось создать карточку. Попробуйте позже.');
     }
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('mixcard')
+  async mixCardList(@Ctx() ctx: Context) {
+    await this.commandBus.execute(
+      new RenewRemainderListCommand(ctx.state.userId),
+    );
+    await ctx.reply('Ваши карточки перемешаны вновь');
   }
 
   @On('text')

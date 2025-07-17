@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { CardsRepository } from '../../infrastructure/cards.repository';
 import { RemainderListDocument } from '../../infrastructure/schemas/cards-remainder-list';
 import { RemainderListRepository } from '../../infrastructure/cards-list.repository';
 
 export class RenewRemainderListCommand {
-  constructor(public userId: ObjectId) {}
+  constructor(public userId: Types.ObjectId) {}
 }
 
 @CommandHandler(RenewRemainderListCommand)
