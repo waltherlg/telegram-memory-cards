@@ -12,8 +12,8 @@ export class SchedulerService {
   @Cron(CronExpression.EVERY_30_SECONDS)
   async handleCron() {
     this.logger.log('⏰ Запустилась задача по расписанию');
-    await this.commandBus.execute(
-      new TelegramTestMessageCommand('⏰ Запустилась задача по расписанию'),
-    );
+    // await this.commandBus.execute(
+    //   new TelegramTestMessageCommand('⏰ Запустилась задача по расписанию'),
+    // );
   }
 }
