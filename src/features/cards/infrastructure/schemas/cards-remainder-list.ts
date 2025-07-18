@@ -6,9 +6,9 @@ export type RemainderListDocument = HydratedDocument<RemainderList>;
 @Schema({ timestamps: true })
 export class RemainderList {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: ObjectId;
+  userId: Types.ObjectId;
   @Prop()
-  cardListToSend: ObjectId[];
+  cardListToSend: Types.ObjectId[];
 
   _id: Types.ObjectId;
   createdAt?: Date;

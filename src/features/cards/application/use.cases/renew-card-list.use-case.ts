@@ -27,6 +27,8 @@ export class RenewRemainderListUseCase
     cardList.cardListToSend =
       await this.cardsRepository.getRandomizedCardIdsByUser(command.userId);
 
+    cardList.markModified('cardListToSend');
+
     const savedCardList = await this.remainderListRepository.saveList(cardList);
     return savedCardList;
   }

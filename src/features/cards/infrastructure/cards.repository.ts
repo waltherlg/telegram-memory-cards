@@ -14,6 +14,12 @@ export class CardsRepository {
     return newCard.title;
   }
 
+  async getCardById(_id: Types.ObjectId): Promise<CardDocument | null> {
+    const card = await this.cardModel.findOne({ _id });
+    if (!card) return null;
+    return card;
+  }
+
   async getRandomCardByUser(
     userId: string | Types.ObjectId,
   ): Promise<Card | null> {
@@ -26,7 +32,7 @@ export class CardsRepository {
 
   async getRandomizedCardIdsByUser(
     userId: Types.ObjectId,
-  ): Promise<ObjectId[]> {
+  ): Promise<Types.ObjectId[]> {
     const result = await this.cardModel.aggregate([
       { $match: { userId: new Types.ObjectId(userId) } },
       { $sample: { size: 1000 } },
