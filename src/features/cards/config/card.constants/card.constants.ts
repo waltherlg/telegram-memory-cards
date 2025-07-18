@@ -1,0 +1,1 @@
+export const CARD_CONSTANTS = { MIN_REMAIND_INTERVAL: 1000 * 60 * 60 * 2 };

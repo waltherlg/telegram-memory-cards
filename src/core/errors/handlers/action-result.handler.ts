@@ -4,4 +4,5 @@ export enum ActionResultEnum {
   TelegramAlreadyRegistered = 'TELEGRAM_ALREADY_REGISTERED',
   NoCardsInList = 'NO_CARDS-IN_LIST',
   CardNotFound = 'CARD_NOT_FOUND',
+  NotNotificationTime = 'NOT_NOTIFICATION_TIME',
 }

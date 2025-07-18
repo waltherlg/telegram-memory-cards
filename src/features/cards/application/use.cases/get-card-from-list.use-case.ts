@@ -4,9 +4,14 @@ import { RemainderListRepository } from '../../infrastructure/cards-list.reposit
 import { RenewRemainderListCommand } from './renew-card-list.use-case';
 import { ActionResultEnum } from '../../../../core/errors/handlers/action-result.handler';
 import { CardsRepository } from '../../infrastructure/cards.repository';
+import { CardDocument } from '../../infrastructure/schemas/card.schema';
+import { CARD_CONSTANTS } from '../../config/card.constants/card.constants';
 
 export class GetCardFromListCommand {
-  constructor(public userId: Types.ObjectId) {}
+  constructor(
+    public userId: Types.ObjectId,
+    public readonly checkTime: boolean = false,
+  ) {}
 }
 
 @CommandHandler(GetCardFromListCommand)
@@ -19,13 +24,26 @@ export class GetCardFromListUseCase
     private readonly commandBus: CommandBus,
   ) {}
 
-  async execute(command: GetCardFromListCommand): Promise<any> {
+  async execute(
+    command: GetCardFromListCommand,
+  ): Promise<CardDocument | ActionResultEnum> {
     let list = await this.cardListRepository.getReminderList(command.userId);
 
     if (list.cardListToSend.length === 0) {
       list = await this.commandBus.execute(
         new RenewRemainderListCommand(command.userId),
       );
+    }
+
+    if (command.checkTime) {
+      const now = new Date();
+      const lastModified = list.updatedAt ?? list.createdAt;
+      if (
+        now.getTime() - new Date(lastModified).getTime() <
+        CARD_CONSTANTS.MIN_REMAIND_INTERVAL
+      ) {
+        return ActionResultEnum.NotNotificationTime;
+      }
     }
 
     const cardId = list.cardListToSend[0];
