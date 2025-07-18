@@ -9,7 +9,7 @@ export class SchedulerService {
 
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_2_HOURS)
   async handleCron() {
     this.logger.log('⏰ Запустилась задача по расписанию');
     // await this.commandBus.execute(

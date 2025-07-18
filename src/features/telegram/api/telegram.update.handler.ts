@@ -12,6 +12,7 @@ import { UserCreateCardCommand } from '../../cards/application/use.cases/create-
 import { CardsRepository } from '../../cards/infrastructure/cards.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { RenewRemainderListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
+import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
@@ -60,15 +61,18 @@ export class TelegramUpdateHandler implements OnModuleInit {
   @Command('read')
   @UseGuards(TelegramAuthGuard)
   async getRandomCard(@Ctx() ctx: Context) {
-    const card = await this.cardsRepository.getRandomCardByUser(
-      ctx.state.userId,
+    const result = await this.commandBus.execute(
+      new GetCardFromListCommand(ctx.state.userId),
     );
-    if (!card) {
+
+    //TODO: добавить actionHandler
+
+    if (!result) {
       await ctx.reply('К сожалению карточка не найдена');
       return;
     }
 
-    await ctx.reply(`${card.text}`);
+    await ctx.reply(`${result.text}`);
   }
 
   @Command('new')
@@ -110,7 +114,7 @@ export class TelegramUpdateHandler implements OnModuleInit {
   }
 
   @UseGuards(TelegramAuthGuard)
-  @Command('mixcard')
+  @Command('mixcards')
   async mixCardList(@Ctx() ctx: Context) {
     await this.commandBus.execute(
       new RenewRemainderListCommand(ctx.state.userId),
