@@ -31,10 +31,16 @@ export class CardsRepository {
   }
 
   async getRandomizedCardIdsByUser(
-    userId: Types.ObjectId,
+    userId: string | Types.ObjectId,
+    category?: string,
   ): Promise<Types.ObjectId[]> {
     const result = await this.cardModel.aggregate([
-      { $match: { userId: new Types.ObjectId(userId) } },
+      {
+        $match: {
+          userId: new Types.ObjectId(userId),
+          ...(category ? { category } : {}),
+        },
+      },
       { $sample: { size: 1000 } },
       { $project: { _id: 1 } },
     ]);

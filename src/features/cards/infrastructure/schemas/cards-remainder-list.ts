@@ -7,6 +7,8 @@ export type RemainderListDocument = HydratedDocument<RemainderList>;
 export class RemainderList {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
+  @Prop({ default: null })
+  currentCategory: string | null;
   @Prop()
   cardListToSend: Types.ObjectId[];
 
