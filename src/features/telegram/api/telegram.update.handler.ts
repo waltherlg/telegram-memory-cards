@@ -65,12 +65,8 @@ export class TelegramUpdateHandler implements OnModuleInit {
       new GetCardFromListCommand(ctx.state.userId),
     );
 
-    //TODO: добавить actionHandler
-
-    if (!result) {
-      await ctx.reply('К сожалению карточка не найдена');
-      return;
-    }
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
 
     await ctx.reply(`${result.text}`);
   }
