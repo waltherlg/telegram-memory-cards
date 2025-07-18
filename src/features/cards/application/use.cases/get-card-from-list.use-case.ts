@@ -21,13 +21,11 @@ export class GetCardFromListUseCase
 
   async execute(command: GetCardFromListCommand): Promise<any> {
     let list = await this.cardListRepository.getReminderList(command.userId);
-    if (!list.cardListToSend) {
+
+    if (list.cardListToSend.length === 0) {
       list = await this.commandBus.execute(
         new RenewRemainderListCommand(command.userId),
       );
-    }
-    if (!list.cardListToSend) {
-      return ActionResultEnum.NoCardsInList;
     }
 
     const cardId = list.cardListToSend[0];
