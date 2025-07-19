@@ -14,6 +14,6 @@ export const USER_CONSTANTS = {
 
   SLEEP_TIME: {
     START: 21,
-    STOP: 8,
+    STOP: 9,
   },
 };
