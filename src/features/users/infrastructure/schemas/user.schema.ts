@@ -17,6 +17,12 @@ export class User implements IUserBase {
   @Prop({ type: String, default: null })
   password?: string;
 
+  @Prop({ type: Number, default: null, min: -12, max: 14 })
+  timeZone: number | null;
+
+  @Prop({ type: Boolean, default: true })
+  notificationOn: boolean;
+
   _id: Types.ObjectId;
 
   createdAt?: Date;
