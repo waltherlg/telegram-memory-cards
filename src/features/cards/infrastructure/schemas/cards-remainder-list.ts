@@ -11,6 +11,8 @@ export class RemainderList {
   currentCategory: string | null;
   @Prop()
   cardListToSend: Types.ObjectId[];
+  @Prop({ type: Date, default: null })
+  lastSentAt?: Date;
 
   _id: Types.ObjectId;
   createdAt?: Date;

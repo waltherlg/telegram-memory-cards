@@ -43,6 +43,14 @@ export class UsersRepository {
     return users;
   }
 
+  async getAllTelegramUsersWithTimeZone(): Promise<UserDocument[]> {
+    const users = await this.userModel.find({
+      telegramId: { $exists: true, $ne: null },
+      timeZone: { $exists: true, $ne: null },
+    });
+    return users;
+  }
+
   async exchangeTelegramIdToUserId(
     telegramId: string,
   ): Promise<Types.ObjectId | null> {

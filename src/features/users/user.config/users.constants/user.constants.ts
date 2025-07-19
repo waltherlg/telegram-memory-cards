@@ -11,4 +11,9 @@ export const USER_CONSTANTS = {
     PATTERN:
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,\-./:;<=>?@[\\\]^_{|}~]).+$/,
   },
+
+  SLEEP_TIME: {
+    START: 21,
+    STOP: 8,
+  },
 };

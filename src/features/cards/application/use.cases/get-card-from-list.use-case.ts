@@ -37,9 +37,9 @@ export class GetCardFromListUseCase
 
     if (command.checkTime) {
       const now = new Date();
-      const lastModified = list.updatedAt ?? list.createdAt;
+      const lastSentAt = list.lastSentAt ?? list.createdAt;
       if (
-        now.getTime() - new Date(lastModified).getTime() <
+        now.getTime() - new Date(lastSentAt).getTime() <
         CARD_CONSTANTS.MIN_REMAIND_INTERVAL
       ) {
         return ActionResultEnum.NotNotificationTime;
@@ -51,6 +51,7 @@ export class GetCardFromListUseCase
     if (!card) return ActionResultEnum.CardNotFound;
 
     list.cardListToSend.shift();
+    list.lastSentAt = new Date();
     list.markModified('cardListToSend');
     await this.cardListRepository.saveList(list);
 
