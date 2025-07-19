@@ -13,6 +13,6 @@ export class SchedulerService {
   @Cron(CronExpression.EVERY_2_HOURS)
   async sendCards() {
     this.logger.log('⏰ Запустилась задача по расписанию');
-    this.commandBus.execute(new SendCardToAllUsersCommand(true));
+    await this.commandBus.execute(new SendCardToAllUsersCommand(true));
   }
 }

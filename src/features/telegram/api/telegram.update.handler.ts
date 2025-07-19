@@ -1,4 +1,8 @@
-import { OnModuleInit, UseGuards } from '@nestjs/common';
+import {
+  OnApplicationBootstrap,
+  OnModuleInit,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
@@ -15,12 +19,12 @@ import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/upda
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
 
 @Update()
-export class TelegramUpdateHandler implements OnModuleInit {
+export class TelegramUpdateHandler implements OnApplicationBootstrap {
   constructor(private readonly commandBus: CommandBus) {}
 
-  async onModuleInit() {
-    console.log('✅ Telegram bot is ready (handler initialized)');
-    this.commandBus.execute(new SendCardToAllUsersCommand(true));
+  async onApplicationBootstrap() {
+    console.log('✅ Telegram bot is ready (app fully bootstrapped)');
+    await this.commandBus.execute(new SendCardToAllUsersCommand(true));
   }
 
   @Start()
