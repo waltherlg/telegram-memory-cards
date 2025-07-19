@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { TelegrafExecutionContext } from 'nestjs-telegraf';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UserDocument } from '../../users/infrastructure/schemas/user.schema';
 
 @Injectable()
 export class TelegramAuthGuard implements CanActivate {
@@ -13,14 +14,14 @@ export class TelegramAuthGuard implements CanActivate {
     const telegramId = ctx.from?.id?.toString();
     if (!telegramId) return false;
 
-    const userId =
-      await this.usersRepository.exchangeTelegramIdToUserId(telegramId);
-    if (!userId) {
+    const user: UserDocument =
+      await this.usersRepository.getUserByTelegramId(telegramId);
+    if (!user) {
       await ctx.reply('Вы не зарегистрированы. Введите /register');
       return false;
     }
 
-    ctx.state.userId = userId;
+    ctx.state.user = user;
     return true;
   }
 }
