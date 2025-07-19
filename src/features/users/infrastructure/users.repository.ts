@@ -30,6 +30,12 @@ export class UsersRepository {
     return savedUser;
   }
 
+  async getUserByTelegramId(telegramId: string): Promise<UserDocument | null> {
+    const user = await this.userModel.findOne({ telegramId });
+    if (!user) return null;
+    return user;
+  }
+
   async getAllTelegramUsers(): Promise<UserDocument[]> {
     const users = await this.userModel.find({
       telegramId: { $exists: true, $ne: null },

@@ -13,6 +13,7 @@ import { CardsRepository } from '../../cards/infrastructure/cards.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { RenewRemainderListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
+import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
@@ -83,6 +84,44 @@ export class TelegramUpdateHandler implements OnModuleInit {
     await ctx.reply(
       `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
     );
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('settimezone')
+  async setTimeZone(@Ctx() ctx: Context) {
+    if (!('text' in ctx.message)) {
+      await ctx.reply(
+        '⚠️ Это не текстовое сообщение. Пожалуйста, введи команду в виде текста.',
+      );
+      return;
+    }
+
+    const messageText = ctx.message.text.trim();
+    const parts = messageText.split(/\s+/);
+
+    if (parts.length < 2) {
+      await ctx.reply('ℹ️ Укажи часовой пояс, например: /settimezone 6');
+      return;
+    }
+
+    const timeZoneStr = parts[1];
+    const timeZone = Number(timeZoneStr);
+
+    if (!Number.isInteger(timeZone) || timeZone < -12 || timeZone > 14) {
+      await ctx.reply(
+        `🤔 То есть ты живёшь в часовом поясе ${timeZoneStr}? Очень смешно.`,
+      );
+      return;
+    }
+
+    const userId = ctx.state.user._id;
+    const result = await this.commandBus.execute(
+      new UpdateUserTimeZoneCommand(userId, timeZone),
+    );
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+
+    await ctx.reply(`✅ Часовой пояс успешно установлен на ${timeZone}`);
   }
 
   @Command('read')
