@@ -21,7 +21,7 @@ export class TelegramAuthGuard implements CanActivate {
       return false;
     }
 
-    ctx.state.user = user;
+    ctx.state.userId = user._id;
     return true;
   }
 }

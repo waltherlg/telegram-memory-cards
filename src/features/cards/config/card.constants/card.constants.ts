@@ -1,1 +1,4 @@
-export const CARD_CONSTANTS = { MIN_REMAIND_INTERVAL: 1000 * 60 * 60 * 2 };
+export const CARD_CONSTANTS = {
+  MIN_REMAIND_INTERVAL: 1000 * 60 * 60 * 2,
+  TEST_2_MINUTE: 1000 * 60 * 2,
+};

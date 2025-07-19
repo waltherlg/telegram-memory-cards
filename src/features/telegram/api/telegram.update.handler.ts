@@ -128,7 +128,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
       return;
     }
 
-    const userId = ctx.state.user._id;
+    const userId = ctx.state.userId;
     const result = await this.commandBus.execute(
       new UpdateUserTimeZoneCommand(userId, timeZone),
     );
@@ -141,15 +141,14 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('read')
   @UseGuards(TelegramAuthGuard)
   async getRandomCard(@Ctx() ctx: Context) {
-    console.log(ctx.state.user._id);
     const result = await this.commandBus.execute(
-      new GetCardFromListCommand(ctx.state.user._Id),
+      new GetCardFromListCommand(ctx.state.userId),
     );
 
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;
 
-    await ctx.reply(`${result.text}`);
+    await ctx.reply(`📌 ${result.text}`);
   }
 
   @Command('new')
@@ -194,7 +193,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('mixcards')
   async mixCardList(@Ctx() ctx: Context) {
     await this.commandBus.execute(
-      new RenewRemainderListCommand(ctx.state.user._Id),
+      new RenewRemainderListCommand(ctx.state.userId),
     );
     await ctx.reply('Ваши карточки перемешаны вновь');
   }

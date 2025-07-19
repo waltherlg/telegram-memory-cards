@@ -40,7 +40,10 @@ export class SendCardToAllUsersUseCase
         );
 
       if (typeof result !== 'string') {
-        await this.telegramAdapter.sendMessage(user.telegramId, result.text);
+        await this.telegramAdapter.sendMessage(
+          user.telegramId,
+          `📌 ${result.text}`,
+        );
       }
     }
   }
