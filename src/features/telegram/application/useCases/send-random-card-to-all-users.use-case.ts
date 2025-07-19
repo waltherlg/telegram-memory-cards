@@ -21,7 +21,7 @@ export class SendCardToAllUsersUseCase
     private readonly commandBus: CommandBus,
   ) {}
   async execute(command: SendCardToAllUsersCommand): Promise<any> {
-    const users = await this.usersRepository.getAllTelegramUsers();
+    const users = await this.usersRepository.getAllTelegramUsersWithTimeZone();
 
     for (const user of users) {
       const isAllowed = isNotificationAllowed(
