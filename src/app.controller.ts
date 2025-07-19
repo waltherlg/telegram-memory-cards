@@ -9,7 +9,7 @@ export class AppController {
 
   @Get()
   getImage(@Res() res: Response) {
-    const filePath = join(__dirname, '..', 'assets', 'wakeup.png'); //
+    const filePath = join(__dirname, 'assets', 'wakeup.png');
     return res.sendFile(filePath);
   }
 }
