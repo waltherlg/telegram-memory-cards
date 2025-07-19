@@ -141,8 +141,9 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('read')
   @UseGuards(TelegramAuthGuard)
   async getRandomCard(@Ctx() ctx: Context) {
+    console.log(ctx.state.user._id);
     const result = await this.commandBus.execute(
-      new GetCardFromListCommand(ctx.state.userId),
+      new GetCardFromListCommand(ctx.state.user._Id),
     );
 
     const isHandled = await telegramHandleActionResult(result, ctx);
@@ -193,7 +194,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('mixcards')
   async mixCardList(@Ctx() ctx: Context) {
     await this.commandBus.execute(
-      new RenewRemainderListCommand(ctx.state.userId),
+      new RenewRemainderListCommand(ctx.state.user._Id),
     );
     await ctx.reply('Ваши карточки перемешаны вновь');
   }
