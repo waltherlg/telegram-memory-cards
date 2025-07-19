@@ -24,6 +24,8 @@ export class SendCardToAllUsersUseCase
     const users = await this.usersRepository.getAllTelegramUsersWithTimeZone();
 
     for (const user of users) {
+      if (!user.timeZone) continue;
+
       const isAllowed = isNotificationAllowed(
         user.timeZone,
         USER_CONSTANTS.SLEEP_TIME.START,
