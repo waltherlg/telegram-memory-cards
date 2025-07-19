@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import { join } from 'path';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getImage(@Res() res: Response) {
+    const filePath = join(__dirname, '..', 'assets', 'wakeup.png');
+    return res.sendFile(filePath);
   }
 }
