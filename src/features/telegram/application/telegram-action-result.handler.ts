@@ -12,6 +12,9 @@ export async function telegramHandleActionResult(
     case ActionResultEnum.Success:
       return true;
 
+    case ActionResultEnum.NotNotificationTime:
+      return true;
+
     case ActionResultEnum.TelegramAlreadyRegistered:
       await ctx.reply('Вы уже зарегистрированы в системе');
       return false;
@@ -28,6 +31,14 @@ export async function telegramHandleActionResult(
 
     case ActionResultEnum.AlreadyRegistered:
       await ctx.reply('Вы уже зарагистрированы в системе');
+      return false;
+
+    case ActionResultEnum.UserNotFound:
+      await ctx.reply('Пользователь не найден. Странно, да?');
+      return false;
+
+    case ActionResultEnum.SomeThingWrong:
+      await ctx.reply('Что то пошло не так, сам не пойму');
       return false;
   }
 }

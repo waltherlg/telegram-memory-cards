@@ -5,4 +5,6 @@ export enum ActionResultEnum {
   NoCardsInList = 'NO_CARDS-IN_LIST',
   CardNotFound = 'CARD_NOT_FOUND',
   NotNotificationTime = 'NOT_NOTIFICATION_TIME',
+  UserNotFound = 'USER_NOT-FOUND',
+  SomeThingWrong = 'SOME_THING_WRONG',
 }
