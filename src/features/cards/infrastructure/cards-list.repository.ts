@@ -16,17 +16,21 @@ export class RemainderListRepository {
   async createReminderList(
     userId: Types.ObjectId,
   ): Promise<RemainderListDocument> {
-    const newList = new this.ReminderListModel({ userId });
+    const newList = new this.ReminderListModel({
+      userId: new Types.ObjectId(userId),
+    });
 
     await newList.save();
     return newList;
   }
 
   async getReminderList(
-    userId: Types.ObjectId,
+    userId: Types.ObjectId | string,
   ): Promise<RemainderListDocument> {
-    const list = await this.ReminderListModel.findOne({ userId });
-    if (!list) return await this.createReminderList(userId);
+    const list = await this.ReminderListModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
+    if (!list) return await this.createReminderList(new Types.ObjectId(userId));
     return list;
   }
 
