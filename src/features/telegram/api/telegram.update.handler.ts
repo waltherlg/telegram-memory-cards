@@ -1,31 +1,26 @@
-import { Injectable, OnModuleInit, UseGuards } from '@nestjs/common';
+import { OnModuleInit, UseGuards } from '@nestjs/common';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
 import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
 import { Command, Ctx, InjectBot, On, Start, Update } from 'nestjs-telegraf';
-import { Context, Telegraf } from 'telegraf';
+import { Context } from 'telegraf';
 import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
 import { CreateCardDto } from '../../cards/domain/dto/cards.dto';
 import { newCardParser } from '../utils/newCardParser';
 import { UserCreateCardCommand } from '../../cards/application/use.cases/create-card.use-case';
-import { CardsRepository } from '../../cards/infrastructure/cards.repository';
-import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { RenewRemainderListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
+import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnModuleInit {
-  constructor(
-    @InjectBot() private readonly bot: Telegraf<Context>,
-    private readonly commandBus: CommandBus,
-    private readonly cardsRepository: CardsRepository,
-    private readonly usersRepository: UsersRepository,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   async onModuleInit() {
     console.log('✅ Telegram bot is ready (handler initialized)');
+    this.commandBus.execute(new SendCardToAllUsersCommand(true));
   }
 
   @Start()
@@ -43,21 +38,36 @@ export class TelegramUpdateHandler implements OnModuleInit {
 
 🤔 Как проверить, сплю ли я? Просто напиши любое сообщение. Если я не отвечаю — значит, я сплю.
 
-🔗 Я просыпаюсь каждый час, но чтобы разбудить меня самостоятельно, перейди по этой ссылке: ${'ссылка'}
+🔗 Я просыпаюсь каждый час, но чтобы разбудить меня самостоятельно, перейди по этой ссылке: ${'https://telegram-memory-cards.onrender.com'}
 Я проснусь через несколько секунд! 😊.
 
 🕰️ После того как ты укажешь свой часовой пояс,
-я буду отправлять тебе напоминалки примерно каждые 2 часа — с 8 утра до 9 вечера. 😊`,
+я буду отправлять тебе напоминалки ПРИМЕРНО каждые 2 часа — с 8 утра до 9 вечера. 😊`,
     );
   }
 
   @Command('help')
   async onHelp(@Ctx() ctx: Context) {
-    await ctx.reply(`Доступные команды:
-      /register - зарегистрирует тебя в системе.
-      /settimezone - установить часовой пояс 
-      (без этого я не буду слать тебе карточки сам, что бы не разбудить тебя ночью), 
-      например "/settimezone +3" установит часовой пояс МСК. `);
+    await ctx.reply(
+      `📋 *Доступные команды:*
+
+📝 /register — зарегистрирует тебя в системе.
+
+🌍 /settimezone — установить часовой пояс.  
+Без этого я не буду слать тебе карточки сам, чтобы не разбудить тебя ночью.  
+Например, "/settimezone +3" установит часовой пояс МСК.
+
+🆕 /new — создаст новую карточку.  
+Формат: \`/new # категория # заголовок карточки # текст карточки\`
+
+📖 /read — выдаст тебе случайную карточку из твоей колоды.
+
+🔀 /mixcards — перетасует карточки, если хочешь всё начать заново.
+  `,
+      {
+        parse_mode: 'Markdown',
+      },
+    );
   }
 
   @Command('register')
