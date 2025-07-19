@@ -6,10 +6,10 @@
     "deleteOutDir": true,
      "assets": [
       {
-        "include": "assets/**/*",
-        "outDir": "dist/assets"
+        "include": "public/**/*",
+        "outDir": "dist/public"
       }
-    ] 
+    ]
   }
 
 }
