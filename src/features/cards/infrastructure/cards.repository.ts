@@ -47,4 +47,11 @@ export class CardsRepository {
 
     return result.map((doc) => doc._id);
   }
+
+  async deleteCardById(cardId: string | Types.ObjectId): Promise<boolean> {
+    const result = await this.cardModel.deleteOne({
+      _id: new Types.ObjectId(cardId),
+    });
+    return result.deletedCount > 0;
+  }
 }
