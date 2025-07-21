@@ -33,6 +33,10 @@ export class GetCardFromListUseCase
       list = await this.commandBus.execute(
         new RenewRemainderListCommand(command.userId),
       );
+
+      if (list.cardListToSend.length === 0) {
+        return ActionResultEnum.NoCardsInCollection;
+      }
     }
 
     if (command.checkTime) {

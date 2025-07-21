@@ -40,5 +40,9 @@ export async function telegramHandleActionResult(
     case ActionResultEnum.SomeThingWrong:
       await ctx.reply('Что то пошло не так, сам не пойму');
       return false;
+
+    case ActionResultEnum.NoCardsInCollection:
+      await ctx.reply('Похоже что у вас нет ни одной карточки в коллекции');
+      return false;
   }
 }
