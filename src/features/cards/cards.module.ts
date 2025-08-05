@@ -5,20 +5,20 @@ import { CardsRepository } from './infrastructure/cards.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Card, CardSchema } from './infrastructure/schemas/card.schema';
 import {
-  RemainderList,
-  ReminderListSchema,
+  CardList,
+  CardListSchema,
 } from './infrastructure/schemas/cards-list.shema';
-import { RemainderListRepository } from './infrastructure/cards-list.repository';
+import { CardListRepository } from './infrastructure/cards-list.repository';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Card.name, schema: CardSchema },
-      { name: RemainderList.name, schema: ReminderListSchema },
+      { name: CardList.name, schema: CardListSchema },
     ]),
   ],
   controllers: [CardsController],
-  providers: [...CardUseCases, CardsRepository, RemainderListRepository],
+  providers: [...CardUseCases, CardsRepository, CardListRepository],
   exports: [CardsRepository],
 })
 export class CardModule {}
