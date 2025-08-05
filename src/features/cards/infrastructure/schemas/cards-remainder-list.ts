@@ -17,6 +17,15 @@ export class RemainderList {
   _id: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+
+  async removeCardFromList(
+    this: HydratedDocument<RemainderList>,
+    id: Types.ObjectId,
+  ) {
+    this.cardListToSend = this.cardListToSend.filter((_id) => !_id.equals(id));
+    this.markModified('cardListToSend');
+    await this.save();
+  }
 }
 
 export const ReminderListSchema = SchemaFactory.createForClass(RemainderList);
