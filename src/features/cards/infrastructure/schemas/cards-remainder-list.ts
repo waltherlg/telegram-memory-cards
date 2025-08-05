@@ -18,6 +18,22 @@ export class RemainderList {
   createdAt?: Date;
   updatedAt?: Date;
 
+  async removeFirstCardFromList(this: HydratedDocument<RemainderList>) {
+    this.cardListToSend.shift();
+    this.lastSentAt = new Date();
+    this.markModified('cardListToSend');
+    await this.save();
+  }
+
+  async addCardToList(
+    this: HydratedDocument<RemainderList>,
+    _id: Types.ObjectId,
+  ) {
+    this.cardListToSend.push(_id);
+    this.markModified('cardListToSend');
+    await this.save();
+  }
+
   async removeCardFromList(
     this: HydratedDocument<RemainderList>,
     id: Types.ObjectId,
@@ -29,3 +45,9 @@ export class RemainderList {
 }
 
 export const ReminderListSchema = SchemaFactory.createForClass(RemainderList);
+
+ReminderListSchema.methods = {
+  addCardToList: RemainderList.prototype.addCardToList,
+  removeFirstCardFromList: RemainderList.prototype.removeFirstCardFromList,
+  removeCardFromList: RemainderList.prototype.removeCardFromList,
+};

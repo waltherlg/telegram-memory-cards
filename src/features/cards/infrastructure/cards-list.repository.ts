@@ -27,7 +27,7 @@ export class RemainderListRepository {
   async getReminderList(
     userId: Types.ObjectId | string,
   ): Promise<RemainderListDocument> {
-    const list = await this.ReminderListModel.findOne({
+    const list: RemainderListDocument = await this.ReminderListModel.findOne({
       userId: new Types.ObjectId(userId),
     });
     if (!list) return await this.createReminderList(new Types.ObjectId(userId));

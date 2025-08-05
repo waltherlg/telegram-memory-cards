@@ -8,10 +8,10 @@ import { CreateCardDto } from '../domain/dto/cards.dto';
 export class CardsRepository {
   constructor(@InjectModel(Card.name) private cardModel: Model<CardDocument>) {}
 
-  async createCard(dto: CreateCardDto): Promise<string> {
+  async createCard(dto: CreateCardDto): Promise<CardDocument> {
     const newCard = new this.cardModel(dto);
     await newCard.save();
-    return newCard.title;
+    return newCard;
   }
 
   async getCardById(_id: Types.ObjectId): Promise<CardDocument | null> {
