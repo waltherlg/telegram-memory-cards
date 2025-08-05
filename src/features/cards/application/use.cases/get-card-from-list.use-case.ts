@@ -1,7 +1,7 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Types } from 'mongoose';
-import { RemainderListRepository } from '../../infrastructure/cards-list.repository';
-import { RenewRemainderListCommand } from './renew-card-list.use-case';
+import { CardListRepository } from '../../infrastructure/cards-list.repository';
+import { RenewCardListCommand } from './renew-card-list.use-case';
 import { ActionResultEnum } from '../../../../core/errors/handlers/action-result.handler';
 import { CardsRepository } from '../../infrastructure/cards.repository';
 import { CardDocument } from '../../infrastructure/schemas/card.schema';
@@ -19,7 +19,7 @@ export class GetCardFromListUseCase
   implements ICommandHandler<GetCardFromListCommand>
 {
   constructor(
-    private readonly cardListRepository: RemainderListRepository,
+    private readonly cardListRepository: CardListRepository,
     private readonly cardsRepository: CardsRepository,
     private readonly commandBus: CommandBus,
   ) {}
@@ -27,11 +27,11 @@ export class GetCardFromListUseCase
   async execute(
     command: GetCardFromListCommand,
   ): Promise<CardDocument | ActionResultEnum> {
-    let list = await this.cardListRepository.getReminderList(command.userId);
+    let list = await this.cardListRepository.getCardList(command.userId);
 
     if (list.cardListToSend.length === 0) {
       list = await this.commandBus.execute(
-        new RenewRemainderListCommand(command.userId),
+        new RenewCardListCommand(command.userId),
       );
 
       if (list.cardListToSend.length === 0) {

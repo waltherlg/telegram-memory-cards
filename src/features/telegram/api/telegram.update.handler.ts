@@ -13,7 +13,7 @@ import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
 import { CreateCardDto } from '../../cards/domain/dto/cards.dto';
 import { newCardParser } from '../utils/newCardParser';
 import { UserCreateCardCommand } from '../../cards/application/use.cases/create-card.use-case';
-import { RenewRemainderListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
+import { RenewCardListCommand } from '../../cards/application/use.cases/renew-card-list.use-case';
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
@@ -192,9 +192,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @UseGuards(TelegramAuthGuard)
   @Command('mixcards')
   async mixCardList(@Ctx() ctx: Context) {
-    await this.commandBus.execute(
-      new RenewRemainderListCommand(ctx.state.userId),
-    );
+    await this.commandBus.execute(new RenewCardListCommand(ctx.state.userId));
     await ctx.reply('Ваши карточки перемешаны вновь');
   }
 

@@ -7,7 +7,7 @@ import { Card, CardSchema } from './infrastructure/schemas/card.schema';
 import {
   RemainderList,
   ReminderListSchema,
-} from './infrastructure/schemas/cards-remainder-list';
+} from './infrastructure/schemas/cards-list.shema';
 import { RemainderListRepository } from './infrastructure/cards-list.repository';
 
 @Module({
