@@ -44,5 +44,9 @@ export async function telegramHandleActionResult(
     case ActionResultEnum.NoCardsInCollection:
       await ctx.reply('Похоже что у вас нет ни одной карточки в коллекции');
       return false;
+
+    case ActionResultEnum.NotOwner:
+      await ctx.reply('только владелец карточки может удалить ее');
+      return false;
   }
 }

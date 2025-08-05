@@ -20,6 +20,12 @@ export class CardsRepository {
     return card;
   }
 
+  async getCardByTitle(title: string): Promise<CardDocument | null> {
+    const card = await this.cardModel.findOne({ title });
+    if (!card) return null;
+    return card;
+  }
+
   async getRandomCardByUser(
     userId: string | Types.ObjectId,
   ): Promise<Card | null> {

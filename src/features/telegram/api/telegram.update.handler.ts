@@ -17,6 +17,7 @@ import { RenewCardListCommand } from '../../cards/application/use.cases/renew-ca
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
+import { TelegramUserDeleteCardCommand } from '../../cards/application/use.cases/tg-user-delete-card.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -148,6 +149,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;
 
+    await ctx.reply(`${result.title}`);
     await ctx.reply(`📌 ${result.text}`);
   }
 
@@ -194,6 +196,24 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   async mixCardList(@Ctx() ctx: Context) {
     await this.commandBus.execute(new RenewCardListCommand(ctx.state.userId));
     await ctx.reply('Ваши карточки перемешаны вновь');
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('delete')
+  async deleteCard(@Ctx() ctx: Context) {
+    if (!('text' in ctx.message)) {
+      await ctx.reply('⚠️ Нужно указать название карточки для удаления.');
+      return;
+    }
+
+    const result = await this.commandBus.execute(
+      new TelegramUserDeleteCardCommand(ctx.state.userId, ctx.message.text),
+    );
+
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+
+    await ctx.reply('Карточка удалена');
   }
 
   @On('text')
