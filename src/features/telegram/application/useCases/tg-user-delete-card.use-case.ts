@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Types } from 'mongoose';
-import { CardListRepository } from '../../infrastructure/cards-list.repository';
-import { CardsRepository } from '../../infrastructure/cards.repository';
 import { ActionResultEnum } from '../../../../core/errors/handlers/action-result.handler';
+import { CardsRepository } from '../../../cards/infrastructure/cards.repository';
+import { CardListRepository } from '../../../cards/infrastructure/cards-list.repository';
 
 export class TelegramUserDeleteCardCommand {
   constructor(

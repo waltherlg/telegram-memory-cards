@@ -1,13 +1,9 @@
-import {
-  OnApplicationBootstrap,
-  OnModuleInit,
-  UseGuards,
-} from '@nestjs/common';
+import { OnApplicationBootstrap, UseGuards } from '@nestjs/common';
 import { CreateUserTelegramDto } from '../domain/dto/user.telegram.domain.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { UserRegisterViaTelegramCommand } from '../application/useCases/user-register-via-telegram.use-case';
 import { telegramHandleActionResult } from '../application/telegram-action-result.handler';
-import { Command, Ctx, InjectBot, On, Start, Update } from 'nestjs-telegraf';
+import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { TelegramAuthGuard } from '../guards/telegram-auth.guard';
 import { CreateCardDto } from '../../cards/domain/dto/cards.dto';
@@ -17,7 +13,7 @@ import { RenewCardListCommand } from '../../cards/application/use.cases/renew-ca
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
-import { TelegramUserDeleteCardCommand } from '../../cards/application/use.cases/tg-user-delete-card.use-case';
+import { TelegramUserDeleteCardCommand } from '../application/useCases/tg-user-delete-card.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
