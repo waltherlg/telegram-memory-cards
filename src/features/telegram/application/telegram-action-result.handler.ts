@@ -1,10 +1,13 @@
 import { Context } from 'telegraf';
 import { ActionResultEnum } from '../../../core/errors/handlers/action-result.handler';
+import { telegramLangSelector } from '../config/i18n/lang-selector.util';
+import { TelegramMessages } from '../config/i18n/telegram.messages';
 
 export async function telegramHandleActionResult(
   result,
   ctx: Context,
 ): Promise<boolean> {
+  const leng = telegramLangSelector(ctx.from.language_code);
   if (!Object.values(ActionResultEnum).includes(result)) {
     return true;
   }
@@ -16,37 +19,35 @@ export async function telegramHandleActionResult(
       return true;
 
     case ActionResultEnum.TelegramAlreadyRegistered:
-      await ctx.reply('Вы уже зарегистрированы в системе');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.NoCardsInList:
-      await ctx.reply(
-        'К сожалению у вас нет карточек в списке, возможно стоит их обновить?',
-      );
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.CardNotFound:
-      await ctx.reply('Странно, но я не нашел нужную карточку');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.AlreadyRegistered:
-      await ctx.reply('Вы уже зарагистрированы в системе');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.UserNotFound:
-      await ctx.reply('Пользователь не найден. Странно, да?');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.SomeThingWrong:
-      await ctx.reply('Что то пошло не так, сам не пойму');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.NoCardsInCollection:
-      await ctx.reply('Похоже что у вас нет ни одной карточки в коллекции');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
 
     case ActionResultEnum.NotOwner:
-      await ctx.reply('только владелец карточки может удалить ее');
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
   }
 }

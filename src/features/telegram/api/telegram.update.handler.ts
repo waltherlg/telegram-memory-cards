@@ -14,6 +14,8 @@ import { GetCardFromListCommand } from '../../cards/application/use.cases/get-ca
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
 import { TelegramUserDeleteCardCommand } from '../../cards/application/use.cases/tg-user-delete-card.use-case';
+import { TelegramMessages } from '../config/i18n/telegram.messages';
+import { telegramLangSelector } from '../config/i18n/lang-selector.util';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -49,30 +51,12 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
 
   @Command('help')
   async onHelp(@Ctx() ctx: Context) {
-    await ctx.reply(
-      `📋 *Доступные команды:*
+    console.log(ctx.from);
 
-📝 /register — зарегистрирует тебя в системе.
-
-🌍 /settimezone — установить часовой пояс.  
-Без этого я не буду слать тебе карточки сам, чтобы не разбудить тебя ночью.  
-Например, "/settimezone +3" установит часовой пояс МСК.
-
-🆕 /new — создаст новую карточку.  
-Формат: \`/new # категория # заголовок карточки # текст карточки\`
-
-📖 /read — выдаст тебе случайную карточку из твоей колоды.
-
-🔀 /mixcards — перетасует карточки, если хочешь всё начать заново.
-  
-❌ /delete — удалит ненужную карточку.  
-Для этого после команды нужно написать её название.  
-Формат: \`/delete нужная карточка\`
-    `,
-      {
-        parse_mode: 'Markdown',
-      },
-    );
+    const lang = telegramLangSelector(ctx.from.language_code);
+    await ctx.reply(TelegramMessages[lang].help, {
+      parse_mode: 'Markdown',
+    });
   }
 
   @Command('register')
@@ -104,10 +88,10 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @UseGuards(TelegramAuthGuard)
   @Command('settimezone')
   async setTimeZone(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
+    const msg = TelegramMessages[lang].setTimezone;
     if (!('text' in ctx.message)) {
-      await ctx.reply(
-        '⚠️ Это не текстовое сообщение. Пожалуйста, введи команду в виде текста.',
-      );
+      await ctx.reply(msg.notText);
       return;
     }
 
@@ -115,7 +99,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const parts = messageText.split(/\s+/);
 
     if (parts.length < 2) {
-      await ctx.reply('ℹ️ Укажи часовой пояс, например: /settimezone 6');
+      await ctx.reply(msg.missingArg);
       return;
     }
 
@@ -123,9 +107,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const timeZone = Number(timeZoneStr);
 
     if (!Number.isInteger(timeZone) || timeZone < -12 || timeZone > 14) {
-      await ctx.reply(
-        `🤔 То есть ты живёшь в часовом поясе ${timeZoneStr}? Очень смешно.`,
-      );
+      await ctx.reply(msg.invalid(timeZoneStr));
       return;
     }
 
@@ -136,7 +118,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;
 
-    await ctx.reply(`✅ Часовой пояс успешно установлен на ${timeZone}`);
+    await ctx.reply(msg.success(timeZone));
   }
 
   @Command('read')
@@ -186,7 +168,6 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
 
       await ctx.reply(`✅ Карточка "${cardTitle}" успешно создана!`);
     } catch (error) {
-      console.error('Ошибка при создании карточки:', error);
       await ctx.reply('❌ Не удалось создать карточку. Попробуйте позже.');
     }
   }
