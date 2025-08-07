@@ -13,7 +13,7 @@ import { RenewCardListCommand } from '../../cards/application/use.cases/renew-ca
 import { GetCardFromListCommand } from '../../cards/application/use.cases/get-card-from-list.use-case';
 import { UpdateUserTimeZoneCommand } from '../../users/application/useCases/update-user-time-zone.use-case';
 import { SendCardToAllUsersCommand } from '../application/useCases/send-random-card-to-all-users.use-case';
-import { TelegramUserDeleteCardCommand } from '../application/useCases/tg-user-delete-card.use-case';
+import { TelegramUserDeleteCardCommand } from '../../cards/application/use.cases/tg-user-delete-card.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -202,9 +202,19 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
       return;
     }
 
+    const text = ctx.message.text.trim();
+    const cardTitle = text.replace(/^\/delete\s*/i, '').trim();
+
+    if (!cardTitle) {
+      await ctx.reply('⚠️ Нужно указать название карточки для удаления.');
+      return;
+    }
+
     const result = await this.commandBus.execute(
-      new TelegramUserDeleteCardCommand(ctx.state.userId, ctx.message.text),
+      new TelegramUserDeleteCardCommand(ctx.state.userId, cardTitle),
     );
+
+    console.log(result);
 
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;

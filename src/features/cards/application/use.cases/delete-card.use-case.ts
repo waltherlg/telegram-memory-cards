@@ -1,4 +1,4 @@
-import { CommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Types } from 'mongoose';
 import { CardListRepository } from '../../infrastructure/cards-list.repository';
 import { CardsRepository } from '../../infrastructure/cards.repository';
@@ -11,9 +11,11 @@ export class DeleteCardCommand {
 }
 
 @CommandHandler(DeleteCardCommand)
-export class DeleteCardUseCase {
+export class DeleteCardUseCase implements ICommandHandler<DeleteCardCommand> {
   constructor(
     private readonly cardListRepo: CardListRepository,
     private readonly cardRepo: CardsRepository,
   ) {}
+
+  async execute(command: DeleteCardCommand): Promise<any> {}
 }

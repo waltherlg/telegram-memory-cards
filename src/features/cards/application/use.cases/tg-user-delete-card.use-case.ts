@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Types } from 'mongoose';
 import { ActionResultEnum } from '../../../../core/errors/handlers/action-result.handler';
-import { CardsRepository } from '../../../cards/infrastructure/cards.repository';
-import { CardListRepository } from '../../../cards/infrastructure/cards-list.repository';
+import { CardsRepository } from '../../infrastructure/cards.repository';
+import { CardListRepository } from '../../infrastructure/cards-list.repository';
 
 export class TelegramUserDeleteCardCommand {
   constructor(
@@ -23,9 +23,13 @@ export class TelegramUserDeleteCardUseCase
   async execute(
     command: TelegramUserDeleteCardCommand,
   ): Promise<ActionResultEnum> {
+    console.log(command.title);
     const card = await this.cardRepo.getCardByTitle(command.title);
     if (!card) return ActionResultEnum.CardNotFound;
-    if (card.userId !== command.userId) return ActionResultEnum.NotOwner;
+
+    console.log(card.userId, command.userId);
+
+    if (!card.userId.equals(command.userId)) return ActionResultEnum.NotOwner;
 
     await this.cardRepo.deleteCardById(card._id);
 
