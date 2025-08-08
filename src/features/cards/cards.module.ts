@@ -9,6 +9,7 @@ import {
   CardListSchema,
 } from './infrastructure/schemas/cards-list.shema';
 import { CardListRepository } from './infrastructure/cards-list.repository';
+import { SaCardsController } from './api/sa.cards.controller';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { CardListRepository } from './infrastructure/cards-list.repository';
       { name: CardList.name, schema: CardListSchema },
     ]),
   ],
-  controllers: [CardsController],
+  controllers: [CardsController, SaCardsController],
   providers: [...CardUseCases, CardsRepository, CardListRepository],
   exports: [CardsRepository],
 })
