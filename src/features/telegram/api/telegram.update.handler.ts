@@ -162,11 +162,14 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     };
 
     try {
-      const cardTitle = await this.commandBus.execute(
+      const result = await this.commandBus.execute(
         new UserCreateCardCommand(dto),
       );
 
-      await ctx.reply(`✅ Карточка "${cardTitle}" успешно создана!`);
+      const isHandled = await telegramHandleActionResult(result, ctx);
+      if (!isHandled) return;
+
+      await ctx.reply(`✅ Карточка "${result}" успешно создана!`);
     } catch (error) {
       await ctx.reply('❌ Не удалось создать карточку. Попробуйте позже.');
     }

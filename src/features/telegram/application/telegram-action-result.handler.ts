@@ -49,5 +49,9 @@ export async function telegramHandleActionResult(
     case ActionResultEnum.NotOwner:
       await ctx.reply(TelegramMessages[leng].actionResult[result]);
       return false;
+
+    case ActionResultEnum.CardAlreadyExist:
+      await ctx.reply(TelegramMessages[leng].actionResult[result]);
+      return false;
   }
 }

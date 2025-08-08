@@ -20,8 +20,14 @@ export class CardsRepository {
     return card;
   }
 
-  async getCardByTitle(title: string): Promise<CardDocument | null> {
-    const card = await this.cardModel.findOne({ title: title });
+  async getCardByTitleAndUserId(
+    title: string,
+    userId: string | Types.ObjectId,
+  ): Promise<CardDocument | null> {
+    const card = await this.cardModel.findOne({
+      userId: new Types.ObjectId(userId),
+      title: title,
+    });
     if (!card) return null;
     return card;
   }

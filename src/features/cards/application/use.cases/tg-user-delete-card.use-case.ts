@@ -24,14 +24,16 @@ export class TelegramUserDeleteCardUseCase
     command: TelegramUserDeleteCardCommand,
   ): Promise<ActionResultEnum> {
     console.log(command.title);
-    const card = await this.cardRepo.getCardByTitle(command.title);
+    const card = await this.cardRepo.getCardByTitleAndUserId(
+      command.title,
+      command.userId,
+    );
     if (!card) return ActionResultEnum.CardNotFound;
-
-    console.log(card.userId, command.userId);
 
     if (!card.userId.equals(command.userId)) return ActionResultEnum.NotOwner;
 
-    await this.cardRepo.deleteCardById(card._id);
+    const result = await this.cardRepo.deleteCardById(card._id);
+    if (!result) return ActionResultEnum.SomeThingWrong;
 
     const cardList = await this.cardListRepo.getCardList(command.userId);
     cardList.removeCardFromList(card._id);

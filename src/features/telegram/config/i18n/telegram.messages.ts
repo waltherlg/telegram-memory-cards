@@ -48,6 +48,8 @@ export const TelegramMessages = {
         '📪 Похоже, у вас ещё нет ни одной карточки в коллекции.',
       [ActionResultEnum.NotOwner]:
         '⛔ Только владелец карточки может её удалить!',
+      [ActionResultEnum.CardAlreadyExist]:
+        '⛔ Похоже карточка с таким заголовком уже существует!',
     },
   },
 
@@ -94,6 +96,8 @@ Format: \`/delete card name\`
       [ActionResultEnum.NoCardsInCollection]:
         '📪 Looks like you don’t have any cards in your collection yet.',
       [ActionResultEnum.NotOwner]: '⛔ Only the card’s owner can delete it!',
+      [ActionResultEnum.CardAlreadyExist]:
+        '⛔ Looks like card with this title already exist',
     },
   },
 };
