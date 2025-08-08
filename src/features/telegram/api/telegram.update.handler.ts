@@ -28,25 +28,8 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
 
   @Start()
   async onStart(@Ctx() ctx: Context) {
-    await ctx.reply(
-      `👋 Привет! Я бот приложения карточек-напоминалок.
-
-📝 Ты можешь создавать карточки, и я буду время от времени показывать их тебе — либо автоматически, либо по твоему запросу.
-
-⚙️ Но сначала тебе нужно зарегистрироваться — просто введи команду /register, чтобы я знал, какие карточки относятся именно к тебе.
-
-ℹ️ Полный список доступных команд ты можешь получить с помощью /help.
-
-⚠️ Важная особенность: приложение работает на бесплатном тарифе и засыпает через 15 минут бездействия (и я вместе с ним 💤).
-
-🤔 Как проверить, сплю ли я? Просто напиши любое сообщение. Если я не отвечаю — значит, я сплю.
-
-🔗 Я просыпаюсь каждый час, но чтобы разбудить меня самостоятельно, перейди по этой ссылке: ${'https://telegram-memory-cards.onrender.com'}
-Я проснусь через несколько секунд! 😊.
-
-🕰️ После того как ты укажешь свой часовой пояс,
-я буду отправлять тебе напоминалки ПРИМЕРНО каждые 2 часа — с 9 утра до 9 вечера. 😊`,
-    );
+    const lang = telegramLangSelector(ctx.from.language_code);
+    await ctx.reply(TelegramMessages[lang].start);
   }
 
   @Command('help')
@@ -62,9 +45,10 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('register')
   async onRegister(@Ctx() ctx: Context) {
     const { id, username, is_bot } = ctx.from!;
+    const lang = telegramLangSelector(ctx.from.language_code);
 
     if (is_bot) {
-      await ctx.reply(`Сорян, ботам вход запрещен`);
+      await ctx.reply(TelegramMessages[lang].register.noBot);
       return;
     }
 
@@ -81,7 +65,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     if (!isHandled) return;
 
     await ctx.reply(
-      `Поздравляю, ты зарегистрировался как ${username} c айдишкой ${result}`,
+      TelegramMessages[lang].register.registered(username, result),
     );
   }
 
@@ -138,19 +122,16 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   @Command('new')
   @UseGuards(TelegramAuthGuard)
   async onMakeCard(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
     if (!('text' in ctx.message)) {
-      await ctx.reply(
-        '⚠️ Это не текстовое сообщение. Пожалуйста, введите команду текстом.',
-      );
+      await ctx.reply(TelegramMessages[lang].notText);
       return;
     }
     const massage = ctx.message?.text || null;
     const parsed = newCardParser(massage);
 
     if (!parsed) {
-      await ctx.reply(
-        '⚠️ Неверный формат.\nПравильно так:\n/new # категория # заголовок # текст',
-      );
+      await ctx.reply(TelegramMessages[lang].new.wrongFormat);
       return;
     }
 
@@ -169,24 +150,26 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
       const isHandled = await telegramHandleActionResult(result, ctx);
       if (!isHandled) return;
 
-      await ctx.reply(`✅ Карточка "${result}" успешно создана!`);
+      await ctx.reply(TelegramMessages[lang].new.cardCreated(result));
     } catch (error) {
-      await ctx.reply('❌ Не удалось создать карточку. Попробуйте позже.');
+      await ctx.reply(TelegramMessages[lang].new.notCreated);
     }
   }
 
   @UseGuards(TelegramAuthGuard)
   @Command('mixcards')
   async mixCardList(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
     await this.commandBus.execute(new RenewCardListCommand(ctx.state.userId));
-    await ctx.reply('Ваши карточки перемешаны вновь');
+    await ctx.reply(TelegramMessages[lang].mixcard.mixed);
   }
 
   @UseGuards(TelegramAuthGuard)
   @Command('delete')
   async deleteCard(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
     if (!('text' in ctx.message)) {
-      await ctx.reply('⚠️ Нужно указать название карточки для удаления.');
+      await ctx.reply(TelegramMessages[lang].notText);
       return;
     }
 
@@ -194,7 +177,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const cardTitle = text.replace(/^\/delete\s*/i, '').trim();
 
     if (!cardTitle) {
-      await ctx.reply('⚠️ Нужно указать название карточки для удаления.');
+      await ctx.reply(TelegramMessages[lang].delete.writeCardTitle);
       return;
     }
 
@@ -207,18 +190,18 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;
 
-    await ctx.reply('Карточка удалена');
+    await ctx.reply(TelegramMessages[lang].delete.deleted);
   }
 
   @On('text')
   async onText(@Ctx() ctx: Context) {
-    const from = ctx.from!;
+    const lang = telegramLangSelector(ctx.from.language_code);
     const message = ctx.message;
 
     if ('text' in message) {
-      await ctx.reply(`Ты написал: ${message.text}, от ${from.username}`);
+      await ctx.reply(TelegramMessages[lang].text.return(message.text));
     } else {
-      await ctx.reply(`Ты отправил что-то странное 🤔`);
+      await ctx.reply(TelegramMessages[lang].text.noText);
     }
   }
 }
