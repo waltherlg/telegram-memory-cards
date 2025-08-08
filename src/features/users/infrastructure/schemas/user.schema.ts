@@ -27,6 +27,20 @@ export class User implements IUserBase {
 
   createdAt?: Date;
   updatedAt?: Date;
+
+  async turnOnNotification(this: HydratedDocument<User>) {
+    this.notificationOn = true;
+    await this.save();
+  }
+
+  async turnOfNotification(this: HydratedDocument<User>) {
+    this.notificationOn = false;
+    await this.save();
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.methods = {
+  turnOnNotification: User.prototype.turnOnNotification,
+  turnOfNotification: User.prototype.turnOfNotification,
+};

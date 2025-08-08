@@ -28,6 +28,11 @@ export const TelegramMessages = {
 Без этого я не буду слать тебе карточки сам, чтобы не разбудить тебя ночью.  
 Например, "/settimezone +3" установит часовой пояс МСК.
 
+/turnoff – 🔕 выключает автоматическую рассылку карточек.  
+По умолчанию она включена.
+
+/turnon – 🔔 включает автоматическую рассылку карточек (если она была отключена).
+
 🆕 /new — создаст новую карточку.  
 Формат: \`/new # категория # заголовок карточки # текст карточки\`
 
@@ -73,6 +78,10 @@ export const TelegramMessages = {
       writeCardTitle: '⚠️ Нужно указать название карточки для удаления.',
       deleted: '🗑️ Карточка удалена!',
     },
+
+    turnOn: '🔔 Уведомления включены',
+
+    turnOff: '🔕 Уведомления отключены',
 
     text: {
       return: (text: string) =>
@@ -129,6 +138,11 @@ I’ll send you reminders APPROXIMATELY every 2 hours — from 9 AM to 9 PM. �
 Without this, I won’t send you cards automatically — so I don’t wake you up at night.  
 Example: "/settimezone +3" sets your timezone to MSK.
 
+/turnoff – 🔕 disables the automatic card reminders.  
+They are enabled by default.
+
+/turnon – 🔔 enables automatic card reminders (if you had turned them off).
+
 🆕 /new — create a new card.  
 Format: \`/new # category # title # text\`
 
@@ -173,6 +187,10 @@ Format: \`/delete card name\`
       writeCardTitle: '⚠️ Please specify the card title to delete.',
       deleted: '🗑️ Card deleted!',
     },
+
+    turnOn: '🔔 Notifications turned on',
+
+    turnOff: '🔕 Notifications turned off',
 
     text: {
       return: (text: string) =>

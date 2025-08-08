@@ -16,6 +16,8 @@ import { SendCardToAllUsersCommand } from '../application/useCases/send-random-c
 import { TelegramUserDeleteCardCommand } from '../../cards/application/use.cases/tg-user-delete-card.use-case';
 import { TelegramMessages } from '../config/i18n/telegram.messages';
 import { telegramLangSelector } from '../config/i18n/lang-selector.util';
+import { SwithNotificationInputDto } from './dto/switchNotificationDto';
+import { SwitchTelegramNotificationCommand } from '../application/useCases/switch-telegram-notificatio.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -191,6 +193,42 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     if (!isHandled) return;
 
     await ctx.reply(TelegramMessages[lang].delete.deleted);
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('turnon')
+  async tutnOnNotification(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
+    const dto: SwithNotificationInputDto = {
+      userId: ctx.state.userId,
+      notificationOn: true,
+    };
+
+    const result = await this.commandBus.execute(
+      new SwitchTelegramNotificationCommand(dto),
+    );
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+
+    await ctx.reply(TelegramMessages[lang].turnOn);
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('turnoff')
+  async tutnOffNotification(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
+    const dto: SwithNotificationInputDto = {
+      userId: ctx.state.userId,
+      notificationOn: false,
+    };
+
+    const result = await this.commandBus.execute(
+      new SwitchTelegramNotificationCommand(dto),
+    );
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+
+    await ctx.reply(TelegramMessages[lang].turnOff);
   }
 
   @On('text')
