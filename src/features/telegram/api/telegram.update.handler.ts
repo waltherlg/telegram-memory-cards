@@ -18,6 +18,8 @@ import { TelegramMessages } from '../config/i18n/telegram.messages';
 import { telegramLangSelector } from '../config/i18n/lang-selector.util';
 import { SwithNotificationInputDto } from './dto/switchNotificationDto';
 import { SwitchTelegramNotificationCommand } from '../application/useCases/switch-telegram-notificatio.use-case';
+import { ActionResultEnum } from '../../../core/errors/handlers/action-result.handler';
+import { SaCardViewDto } from '../../cards/api/dto/card.view.dto';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -152,7 +154,7 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
       const isHandled = await telegramHandleActionResult(result, ctx);
       if (!isHandled) return;
 
-      await ctx.reply(TelegramMessages[lang].new.cardCreated(result));
+      await ctx.reply(TelegramMessages[lang].new.cardCreated(result.title));
     } catch (error) {
       await ctx.reply(TelegramMessages[lang].new.notCreated);
     }

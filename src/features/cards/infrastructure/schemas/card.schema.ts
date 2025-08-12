@@ -20,6 +20,18 @@ export class Card {
   _id: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+
+  returnForSa() {
+    return {
+      userId: this.userId.toString(),
+      category: this.category,
+      title: this.title,
+      text: this.text,
+    };
+  }
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
+CardSchema.methods = {
+  returnForSa: Card.prototype.returnForSa,
+};

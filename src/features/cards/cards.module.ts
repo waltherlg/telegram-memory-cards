@@ -10,9 +10,11 @@ import {
 } from './infrastructure/schemas/cards-list.shema';
 import { CardListRepository } from './infrastructure/cards-list.repository';
 import { SaCardsController } from './api/sa.cards.controller';
+import { UserModule } from '../users/user.module';
 
 @Module({
   imports: [
+    UserModule,
     MongooseModule.forFeature([
       { name: Card.name, schema: CardSchema },
       { name: CardList.name, schema: CardListSchema },
