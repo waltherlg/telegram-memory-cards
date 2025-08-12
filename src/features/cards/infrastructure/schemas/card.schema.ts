@@ -23,7 +23,7 @@ export class Card {
 
   returnForSa() {
     return {
-      userId: this.userId,
+      userId: this.userId.toString(),
       category: this.category,
       title: this.title,
       text: this.text,
