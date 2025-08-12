@@ -4,11 +4,12 @@ import { BasicAuthGuard } from '../../../auth/guards/basic-auth-guard/basic-auth
 import { ApiBasicAuth } from '@nestjs/swagger';
 import { CreateCardDto } from '../domain/dto/cards.dto';
 import { SaCreateCardSwagger } from '../config/sa-cards.swagger-decorators';
+import { SaCreateCardInputDto } from './dto/card.input.dto';
 
 @Controller(SA_CARDS_PATHS.CARDS)
 export class SaCardsController {
   @SaCreateCardSwagger()
   @UseGuards(BasicAuthGuard)
   @Post()
-  async saCreateCard(@Body() body: CreateCardDto) {}
+  async saCreateCard(@Body() body: SaCreateCardInputDto) {}
 }
