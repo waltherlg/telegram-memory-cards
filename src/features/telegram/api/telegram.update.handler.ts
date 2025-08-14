@@ -20,6 +20,8 @@ import { SwithNotificationInputDto } from './dto/switchNotificationDto';
 import { SwitchTelegramNotificationCommand } from '../application/useCases/switch-telegram-notificatio.use-case';
 import { ActionResultEnum } from '../../../core/errors/handlers/action-result.handler';
 import { SaCardViewDto } from '../../cards/api/dto/card.view.dto';
+import { RemindIntervalSetDto } from '../../cards/domain/dto/card-lists.dto';
+import { SetMinRemindIntervalCommand } from '../../cards/application/use.cases/set-remind-interval.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -169,6 +171,35 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
   }
 
   @UseGuards(TelegramAuthGuard)
+  @Command('setinterval')
+  async setReminderInterval(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
+    if (!('text' in ctx.message)) {
+      await ctx.reply(TelegramMessages[lang].notText);
+      return;
+    }
+
+    const text = ctx.message.text.trim();
+    const hours = text.replace(/^\/setinterval\s*/i, '').trim();
+    if (+hours < 0 || +hours > 23) {
+      await ctx.reply(TelegramMessages[lang].setinterval.wrongFormat);
+      return;
+    }
+
+    const dto: RemindIntervalSetDto = {
+      userId: ctx.state.userId,
+      hours: +hours,
+    };
+
+    const result = await this.commandBus.execute(
+      new SetMinRemindIntervalCommand(dto),
+    );
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+    await ctx.reply(TelegramMessages[lang].setinterval.succsess(hours));
+  }
+
+  @UseGuards(TelegramAuthGuard)
   @Command('delete')
   async deleteCard(@Ctx() ctx: Context) {
     const lang = telegramLangSelector(ctx.from.language_code);
@@ -188,8 +219,6 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     const result = await this.commandBus.execute(
       new TelegramUserDeleteCardCommand(ctx.state.userId, cardTitle),
     );
-
-    console.log(result);
 
     const isHandled = await telegramHandleActionResult(result, ctx);
     if (!isHandled) return;

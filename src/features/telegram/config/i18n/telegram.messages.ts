@@ -18,7 +18,7 @@ export const TelegramMessages = {
 Я проснусь через несколько секунд! 😊.
 
 🕰️ После того как ты укажешь свой часовой пояс,
-я буду отправлять тебе напоминалки ПРИМЕРНО каждые 2 часа — с 9 утра до 9 вечера. 😊`,
+я буду отправлять тебе напоминалки ПРИМЕРНО каждые 2 часа (можно настроить периодичность) — с 9 утра до 9 вечера. 😊`,
 
     help: `📋 *Доступные команды:*
 
@@ -27,6 +27,9 @@ export const TelegramMessages = {
 🌍 /settimezone — установить часовой пояс.  
 Без этого я не буду слать тебе карточки сам, чтобы не разбудить тебя ночью.  
 Например, "/settimezone +3" установит часовой пояс МСК.
+
+🕰️ /setinterval - устанавливает интервал между напоминалками от 1 до 23 часов. 
+По умолчанию 2 часа
 
 /turnoff – 🔕 выключает автоматическую рассылку карточек.  
 По умолчанию она включена.
@@ -60,6 +63,12 @@ export const TelegramMessages = {
       invalid: (tz: string) =>
         `🤔 То есть ты живёшь в часовом поясе ${tz}? Очень смешно.`,
       success: (tz: number) => `✅ Часовой пояс успешно установлен на ${tz}`,
+    },
+
+    setinterval: {
+      wrongFormat: '⚠️ интервал должен быть целым числом больше 0 и меньше 24',
+      succsess: (hours) =>
+        `✅ Интервал между напоминаниями теперь ${hours} час/часа/часов`,
     },
 
     new: {
@@ -128,7 +137,7 @@ export const TelegramMessages = {
 I’ll be awake in just a few seconds! 😊
 
 🕰️ Once you set your time zone,
-I’ll send you reminders APPROXIMATELY every 2 hours — from 9 AM to 9 PM. 😊`,
+I’ll send you reminders APPROXIMATELY every 2 hours (you can set the interval) — from 9 AM to 9 PM. 😊`,
 
     help: `📋 *Available commands:*
 
@@ -137,6 +146,9 @@ I’ll send you reminders APPROXIMATELY every 2 hours — from 9 AM to 9 PM. �
 🌍 /settimezone — set your timezone.  
 Without this, I won’t send you cards automatically — so I don’t wake you up at night.  
 Example: "/settimezone +3" sets your timezone to MSK.
+
+🕰️ /setinterval - sets the interval between reminders from 1 to 23 hours. 
+Default is 2 hours
 
 /turnoff – 🔕 disables the automatic card reminders.  
 They are enabled by default.
@@ -169,6 +181,13 @@ Format: \`/delete card name\`
       missingArg: 'ℹ️ Please specify your timezone, e.g., /settimezone 6',
       invalid: (tz: string) => `🤔 You live in timezone ${tz}? Very funny.`,
       success: (tz: number) => `✅ Timezone successfully set to ${tz}`,
+    },
+
+    setinterval: {
+      wrongFormat:
+        '⚠️ interval must be an integer greater than 0 and less than 24',
+      succsess: (hours) =>
+        `✅ the interval between reminders is now ${hours} hours`,
     },
 
     new: {
