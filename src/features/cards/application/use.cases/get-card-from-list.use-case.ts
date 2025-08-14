@@ -42,11 +42,10 @@ export class GetCardFromListUseCase
     if (command.checkTime) {
       const now = new Date();
       const lastSentAt = list.lastSentAt ?? list.createdAt;
-      if (
-        now.getTime() - new Date(lastSentAt).getTime() <
-          list.minRemaindInterval * 1000 * 60 * 60 ||
-        CARD_CONSTANTS.MIN_REMAIND_INTERVAL
-      ) {
+      const minInterval = list.minRemaindInterval
+        ? list.minRemaindInterval * 1000 * 60 * 60
+        : CARD_CONSTANTS.MIN_REMAIND_INTERVAL;
+      if (now.getTime() - new Date(lastSentAt).getTime() < minInterval) {
         return ActionResultEnum.NotNotificationTime;
       }
     }
