@@ -44,6 +44,7 @@ export class GetCardFromListUseCase
       const lastSentAt = list.lastSentAt ?? list.createdAt;
       if (
         now.getTime() - new Date(lastSentAt).getTime() <
+          list.minRemaindInterval ||
         CARD_CONSTANTS.MIN_REMAIND_INTERVAL
       ) {
         return ActionResultEnum.NotNotificationTime;

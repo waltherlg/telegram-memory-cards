@@ -13,10 +13,17 @@ export class CardList {
   cardListToSend: Types.ObjectId[];
   @Prop({ type: Date, default: null })
   lastSentAt?: Date;
+  @Prop({ type: Number, default: 2 })
+  minRemaindInterval: number;
 
   _id: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
+
+  async setMinInterval(this: HydratedDocument<CardList>, number: number) {
+    this.minRemaindInterval = number;
+    await this.save();
+  }
 
   async removeFirstCardFromList(this: HydratedDocument<CardList>) {
     this.cardListToSend.shift();
@@ -47,4 +54,5 @@ CardListSchema.methods = {
   addCardToList: CardList.prototype.addCardToList,
   removeFirstCardFromList: CardList.prototype.removeFirstCardFromList,
   removeCardFromList: CardList.prototype.removeCardFromList,
+  setMinInterval: CardList.prototype.setMinInterval,
 };

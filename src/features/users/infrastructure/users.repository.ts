@@ -60,6 +60,11 @@ export class UsersRepository {
     return user._id;
   }
 
+  async isUserExist(userId: Types.ObjectId | string): Promise<boolean> {
+    const count = await this.userModel.countDocuments({ _id: userId });
+    return count > 0;
+  }
+
   async isUserNameExist(userName: string): Promise<boolean> {
     const count = await this.userModel.countDocuments({ userName });
     return count > 0;
