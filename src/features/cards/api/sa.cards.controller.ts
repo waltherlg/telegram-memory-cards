@@ -11,6 +11,7 @@ import {
   UserCreateCardUseCase,
 } from '../application/use.cases/create-card.use-case';
 import { HandleActionResult } from '../../../core/errors/handlers/action-result.handler';
+import { Types } from 'mongoose';
 
 @Controller(SA_CARDS_PATHS.CARDS)
 export class SaCardsController {
@@ -19,8 +20,12 @@ export class SaCardsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   async saCreateCard(@Body() body: SaCreateCardInputDto) {
+    const dto: CreateCardDto = {
+      ...body,
+      userId: new Types.ObjectId(body.userId),
+    };
     const result = await this.commandBus.execute(
-      new UserCreateCardCommand(body),
+      new UserCreateCardCommand(dto),
     );
 
     HandleActionResult(result);
