@@ -32,6 +32,7 @@ export class UserCreateCardUseCase
       command.dto.userId,
     );
     if (isTitleExist) return ActionResultEnum.CardAlreadyExist;
+
     const createdCard = await this.cardsRepository.createCard(command.dto);
     const cardList: CardListDocument = await this.cardListRepo.getCardList(
       command.dto.userId,

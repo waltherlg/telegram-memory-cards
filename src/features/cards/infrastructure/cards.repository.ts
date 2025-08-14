@@ -11,7 +11,7 @@ export class CardsRepository {
   async createCard(dto: CreateCardDto): Promise<CardDocument> {
     const newCard = new this.cardModel(dto);
     await newCard.save();
-    return newCard;
+    return await this.cardModel.findOne({ _id: newCard._id });
   }
 
   async getCardById(_id: Types.ObjectId): Promise<CardDocument | null> {
