@@ -31,6 +31,8 @@ export const TelegramMessages = {
 🕰️ /setinterval - устанавливает интервал между напоминалками от 1 до 23 часов. 
 По умолчанию 2 часа
 
+
+
 /turnoff – 🔕 выключает автоматическую рассылку карточек.  
 По умолчанию она включена.
 
@@ -38,6 +40,14 @@ export const TelegramMessages = {
 
 🆕 /new — создаст новую карточку.  
 Формат: \`/new # категория # заголовок карточки # текст карточки\`
+
+/setcategory – устанавливает карточки из какой категории 📂 я буду отправлять тебе ✉️
+по умолчанию я отправляю карточки всех категорий ✨
+но ты можешь написать команду, например "/setcategory it" 💻,
+и тогда я буду посылать карточки только с категорией it ⚡
+Если ты напишешь "/setcategory" ✍️ без названия самой категории 🏷️, я снова буду посылать карточки ВСЕХ категорий ✨📚
+
+⚠️ Важно!!! Если у тебя нет карточек с выбранной категорией 🚫, я не смогу послать тебе ничего 🙈
 
 📖 /read — выдаст тебе случайную карточку из твоей колоды.
 
@@ -163,6 +173,15 @@ They are enabled by default.
 
 🆕 /new — create a new card.  
 Format: \`/new # category # title # text\`
+
+/setcategory – sets which category of cards I’ll send you 🗂️
+By default, I send cards from all categories ✨
+But you can type a command like /setcategory it 💻,
+and then I’ll only send cards from the IT category ⚡
+
+If you type "/setcategory" ✍️ without the category name 🏷️, I’ll start sending you cards from ALL categories ✨📚
+
+⚠️ Important! If you don’t have any cards in the chosen category, I won’t be able to send you anything 🙈
 
 📖 /read — sends you a random card from your deck.
 
