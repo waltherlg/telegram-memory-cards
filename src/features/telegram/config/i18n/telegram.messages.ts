@@ -88,6 +88,12 @@ export const TelegramMessages = {
       deleted: '🗑️ Карточка удалена!',
     },
 
+    setCategory: {
+      writeCategory: '⚠️ Нужно указать название категории',
+      categorySet: (category: string) =>
+        `вы выбрали категорию ${category}, 🔀 Ваши карточки перемешаны вновь!`,
+    },
+
     turnOn: '🔔 Уведомления включены',
 
     turnOff: '🔕 Уведомления отключены',
@@ -205,6 +211,12 @@ Format: \`/delete card name\`
     delete: {
       writeCardTitle: '⚠️ Please specify the card title to delete.',
       deleted: '🗑️ Card deleted!',
+    },
+
+    setCategory: {
+      writeCategory: '⚠️ You need to specify a category name',
+      categorySet: (category: string) =>
+        `you selected the category ${category}, 🔀 your cards have been shuffled again!`,
     },
 
     turnOn: '🔔 Notifications turned on',
