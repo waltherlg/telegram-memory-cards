@@ -46,6 +46,14 @@ export class CardList {
     this.markModified('cardListToSend');
     await this.save();
   }
+
+  async setCurrentCategory(
+    this: HydratedDocument<CardList>,
+    category: string | null,
+  ) {
+    this.currentCategory = category;
+    await this.save();
+  }
 }
 
 export const CardListSchema = SchemaFactory.createForClass(CardList);
@@ -55,4 +63,5 @@ CardListSchema.methods = {
   removeFirstCardFromList: CardList.prototype.removeFirstCardFromList,
   removeCardFromList: CardList.prototype.removeCardFromList,
   setMinInterval: CardList.prototype.setMinInterval,
+  setCurrentCategory: CardList.prototype.setCurrentCategory,
 };
