@@ -21,7 +21,10 @@ export class RenewCardListUseCase
     const cardList = await this.cardListRepository.getCardList(command.userId);
 
     cardList.cardListToSend =
-      await this.cardsRepository.getRandomizedCardIdsByUser(command.userId);
+      await this.cardsRepository.getRandomizedCardIdsByUser(
+        command.userId,
+        cardList.currentCategory,
+      );
 
     cardList.markModified('cardListToSend');
 

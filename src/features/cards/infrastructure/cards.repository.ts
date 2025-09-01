@@ -44,7 +44,7 @@ export class CardsRepository {
 
   async getRandomizedCardIdsByUser(
     userId: string | Types.ObjectId,
-    category?: string,
+    category?: string | null,
   ): Promise<Types.ObjectId[]> {
     const result = await this.cardModel.aggregate([
       {

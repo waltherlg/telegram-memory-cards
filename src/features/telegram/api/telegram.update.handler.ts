@@ -22,6 +22,7 @@ import { ActionResultEnum } from '../../../core/errors/handlers/action-result.ha
 import { SaCardViewDto } from '../../cards/api/dto/card.view.dto';
 import { RemindIntervalSetDto } from '../../cards/domain/dto/card-lists.dto';
 import { SetMinRemindIntervalCommand } from '../../cards/application/use.cases/set-remind-interval.use-case';
+import { SetCurrentCategoryCommand } from '../../cards/application/use.cases/set-current-category.use-case';
 
 @Update()
 export class TelegramUpdateHandler implements OnApplicationBootstrap {
@@ -224,6 +225,32 @@ export class TelegramUpdateHandler implements OnApplicationBootstrap {
     if (!isHandled) return;
 
     await ctx.reply(TelegramMessages[lang].delete.deleted);
+  }
+
+  @UseGuards(TelegramAuthGuard)
+  @Command('setcategory')
+  async setCategory(@Ctx() ctx: Context) {
+    const lang = telegramLangSelector(ctx.from.language_code);
+    if (!('text' in ctx.message)) {
+      await ctx.reply(TelegramMessages[lang].notText);
+      return;
+    }
+
+    const text = ctx.message.text.trim();
+    let category = text.replace(/^\/setcategory\s*/i, '').trim();
+
+    if (!category) {
+      category = null;
+    }
+
+    const result = await this.commandBus.execute(
+      new SetCurrentCategoryCommand(ctx.state.userId, category),
+    );
+
+    const isHandled = await telegramHandleActionResult(result, ctx);
+    if (!isHandled) return;
+
+    await ctx.reply(TelegramMessages[lang].setCategory.categorySet(category));
   }
 
   @UseGuards(TelegramAuthGuard)
